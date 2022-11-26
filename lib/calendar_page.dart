@@ -1,31 +1,24 @@
-// Copyright 2019 Aleksander Woźniak
-// SPDX-License-Identifier: Apache-2.0
-
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 
-class TableBasicsExample extends StatefulWidget {
-  const TableBasicsExample({super.key});
+class Calendar extends StatefulWidget {
+  const Calendar({super.key});
 
   @override
-  _TableBasicsExampleState createState() => _TableBasicsExampleState();
+  CalendarState createState() => CalendarState();
 }
 
-class _TableBasicsExampleState extends State<TableBasicsExample> {
+class CalendarState extends State<Calendar> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('TableCalendar - Basics'),
-      ),
-      body: TableCalendar(
-        firstDay: DateTime.now(),
-        lastDay: DateTime.utc(2024),
+    return  TableCalendar(
+        firstDay: DateTime.utc(1970),
+        lastDay: DateTime.utc(2100),
         focusedDay: _focusedDay,
         calendarFormat: _calendarFormat,
         selectedDayPredicate: (day) {
@@ -57,7 +50,6 @@ class _TableBasicsExampleState extends State<TableBasicsExample> {
           // No need to call `setState()` here
           _focusedDay = focusedDay;
         },
-      ),
     );
   }
 }

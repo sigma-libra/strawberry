@@ -3,10 +3,12 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:strawberry/calendar_page.dart';
 
 void main() {
-  initializeDateFormatting().then((_) => runApp(MyApp()));
+  initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,38 +16,26 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: StartPage(),
+      home: const StartPage(),
     );
   }
 }
 
 class StartPage extends StatefulWidget {
+  const StartPage({super.key});
+
   @override
-  _StartPageState createState() => _StartPageState();
+  StartPageState createState() => StartPageState();
 }
 
-class _StartPageState extends State<StartPage> {
+class StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TableCalendar Example'),
+        title: const Text('Strawberry'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20.0),
-            ElevatedButton(
-              child: Text('Basics'),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => TableBasicsExample()),
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: const Calendar()
     );
   }
 }
