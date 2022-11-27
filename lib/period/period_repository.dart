@@ -49,7 +49,8 @@ class PeriodRepository {
   Future<void> deletePeriod(int id) async {
     await database.delete(
       tableName,
-      where: '$idColumn = ?',
+      where: 'id = ?',
+      // Pass the Dog's id as a whereArg to prevent SQL injection.
       whereArgs: [id],
     );
   }

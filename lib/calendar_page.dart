@@ -12,17 +12,38 @@ class Calendar extends StatefulWidget {
 }
 
 class CalendarState extends State<Calendar> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+
+  final List<DateTime> periods = [];
+
+  void _onDayLongPressed(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        if (periods.contains(selectedDay)) {
+          periods.remove(selectedDay);
+        } else {
+          periods.add(selectedDay);
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return TableCalendar(
+      headerStyle: const HeaderStyle(
+        formatButtonVisible: false,
+        titleCentered: true,
+      ),
+      availableCalendarFormats: const {
+        CalendarFormat.month: 'Month',
+      },
       firstDay: DateTime.utc(1970),
       lastDay: DateTime.utc(2100),
       focusedDay: _focusedDay,
-      calendarFormat: _calendarFormat,
+      calendarFormat: CalendarFormat.month,
+      startingDayOfWeek: StartingDayOfWeek.monday,
       selectedDayPredicate: (day) {
         // Use `selectedDayPredicate` to determine which day is currently selected.
         // If this returns true, then `day` will be marked as selected.
@@ -36,22 +57,34 @@ class CalendarState extends State<Calendar> {
           // Call `setState()` when updating the selected day
           setState(() {
             _selectedDay = selectedDay;
-            _focusedDay = focusedDay;
           });
         }
       },
-      onFormatChanged: (format) {
-        if (_calendarFormat != format) {
-          // Call `setState()` when updating calendar format
-          setState(() {
-            _calendarFormat = format;
-          });
-        }
-      },
+      onDayLongPressed: _onDayLongPressed,
       onPageChanged: (focusedDay) {
         // No need to call `setState()` here
         _focusedDay = focusedDay;
       },
+      calendarBuilders: CalendarBuilders(
+        defaultBuilder: (context, day, focusedDay) {
+          for (DateTime d in periods) {
+            if (isSameDay(day, d)) {
+              return Container(
+                decoration: const BoxDecoration(
+                  color: Colors.redAccent,
+                ),
+                child: Center(
+                  child: Text(
+                    '${day.day}',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              );
+            }
+          }
+          return null;
+        },
+      ),
     );
   }
 }
