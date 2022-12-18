@@ -12,7 +12,7 @@ class PeriodRepository {
       onCreate: (db, version) {
         // Run the CREATE TABLE statement on the database.
         return db.execute(
-          'CREATE TABLE $tableName($idColumn INTEGER PRIMARY KEY, $startDateColumn INTEGER, $endDateColumn INTEGER)',
+          'CREATE TABLE $tableName($idColumn INTEGER PRIMARY KEY, $dateColumn INTEGER)',
         );
       },
       // Set the version. This executes the onCreate function and provides a
@@ -21,7 +21,7 @@ class PeriodRepository {
     );
   }
 
-  Future<void> insertPeriod(Period period) async {
+  Future<void> insertPeriod(PeriodDay period) async {
     await database.insert(
       tableName,
       period.toMap(),
@@ -29,15 +29,15 @@ class PeriodRepository {
     );
   }
 
-  Future<List<Period>> getPeriods() async {
+  Future<List<DateTime>> getPeriodDates() async {
     final List<Map<String, dynamic>> maps = await database.query(tableName);
 
     return List.generate(maps.length, (i) {
-      return Period.fromMap(maps[i]);
+      return PeriodDay.fromMap(maps[i]).date;
     });
   }
 
-  Future<void> updatePeriod(Period period) async {
+  Future<void> updatePeriod(PeriodDay period) async {
     await database.update(
       tableName,
       period.toMap(),
@@ -46,12 +46,12 @@ class PeriodRepository {
     );
   }
 
-  Future<void> deletePeriod(int id) async {
+  Future<void> deletePeriod(DateTime date) async {
     await database.delete(
       tableName,
-      where: 'id = ?',
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
-      whereArgs: [id],
+      where: '$dateColumn = ?',
+      // Pass the period's id as a whereArg to prevent SQL injection.
+      whereArgs: [date.millisecondsSinceEpoch],
     );
   }
 }

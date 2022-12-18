@@ -4,20 +4,17 @@ import 'dart:math';
 
 import 'package:strawberry/period/database_constants.dart';
 
-class Period {
+class PeriodDay {
   late int id;
-  late DateTime startDate;
-  late DateTime endDate;
+  late DateTime date;
 
-  Period({
+  PeriodDay({
     required this.id,
-    required this.startDate,
-    required this.endDate,
+    required this.date,
   });
 
-  Period.create(this.startDate) {
+  PeriodDay.create(this.date) {
     id = Random().nextInt(10000);
-    endDate = startDate;
   }
 
   // Convert a Period into a Map. The keys must correspond to the names of the
@@ -25,16 +22,14 @@ class Period {
   Map<String, dynamic> toMap() {
     return {
       idColumn: id,
-      startDateColumn: startDate.millisecondsSinceEpoch,
-      endDateColumn: endDate.millisecondsSinceEpoch,
+      dateColumn: date.millisecondsSinceEpoch,
     };
   }
 
-  static Period fromMap(Map<String, dynamic> map) {
-    return Period(
+  static PeriodDay fromMap(Map<String, dynamic> map) {
+    return PeriodDay(
       id: map[idColumn],
-      startDate: DateTime.fromMillisecondsSinceEpoch(map[startDateColumn]),
-      endDate: DateTime.fromMillisecondsSinceEpoch(map[endDateColumn]),
+      date: DateTime.fromMillisecondsSinceEpoch(map[dateColumn], isUtc: true),
     );
   }
 
@@ -42,6 +37,6 @@ class Period {
   // each period when using the print statement.
   @override
   String toString() {
-    return 'Period{id: $id, startDate: $startDate, endDate: $endDate}';
+    return 'Period{id: $id, date: $date}';
   }
 }

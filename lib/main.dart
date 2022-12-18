@@ -6,7 +6,7 @@ import 'package:strawberry/period/period_repository.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PeriodRepository repository = PeriodRepository();
-  repository.initDatabase();
+  await repository.initDatabase();
   initializeDateFormatting().then((_) => runApp(MyApp(repository: repository)));
 }
 

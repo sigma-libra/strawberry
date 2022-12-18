@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strawberry/period/period.dart';
 import 'package:strawberry/period/period_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -15,22 +16,34 @@ class CalendarState extends State<Calendar> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  final List<DateTime> periods = [];
-
-  void _onDayLongPressed(DateTime selectedDay, DateTime focusedDay) {
-    if (!isSameDay(_selectedDay, selectedDay)) {
-      setState(() {
-        if (periods.contains(selectedDay)) {
-          periods.remove(selectedDay);
-        } else {
-          periods.add(selectedDay);
-        }
-      });
-    }
+  @override
+  void initState() {
+    super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: widget.repository.getPeriodDates(),
+        builder: (BuildContext context, AsyncSnapshot<List<DateTime>> snapshot) {
+          if(snapshot.hasError) {
+            return Text(
+              'There was an error :(',
+              style: Theme.of(context).textTheme.headline1,
+            );
+          }
+          else if(snapshot.hasData) {
+            return makeCalendar(snapshot.requireData.toList(growable: true));
+          } else {
+            return const CircularProgressIndicator();
+          }
+        }
+    );
+  }
+
+
+  Widget makeCalendar(List<DateTime> periods) {
     return TableCalendar(
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,
@@ -52,15 +65,15 @@ class CalendarState extends State<Calendar> {
         // the time-part of compared DateTime objects.
         return isSameDay(_selectedDay, day);
       },
-      onDaySelected: (selectedDay, focusedDay) {
-        if (!isSameDay(_selectedDay, selectedDay)) {
-          // Call `setState()` when updating the selected day
-          setState(() {
-            _selectedDay = selectedDay;
-          });
-        }
+      onDayLongPressed: (DateTime selectedDay, DateTime focusedDay) {
+        setState(() {
+          if (periods.contains(selectedDay)) {
+            widget.repository.deletePeriod(selectedDay);
+          } else {
+            widget.repository.insertPeriod(PeriodDay.create(selectedDay));
+          }
+        });
       },
-      onDayLongPressed: _onDayLongPressed,
       onPageChanged: (focusedDay) {
         // No need to call `setState()` here
         _focusedDay = focusedDay;
