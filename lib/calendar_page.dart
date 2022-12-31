@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:strawberry/period/period.dart';
+import 'package:strawberry/period/period_day.dart';
 import 'package:strawberry/period/period_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
