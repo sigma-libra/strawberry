@@ -3,8 +3,6 @@
 
 
 
-import 'package:strawberry/period/stats.dart';
-
 class Period {
   DateTime startDay;
   DateTime endDay;
@@ -15,27 +13,32 @@ class Period {
   });
 
   bool addToEndOfPeriod(DateTime day) {
-    Duration oneDay = const Duration(days: 1);
-    if(startDay.difference(day) < oneDay || endDay.difference(day) < oneDay || (startDay.isBefore(day) && endDay.isAfter(day))) {
+    if(startDay.difference(day).inDays.abs() < 1 || endDay.difference(day).inDays.abs() < 1 || (startDay.isBefore(day) && endDay.isAfter(day))) {
       return true;
     }
-    if(endDay.difference(day).inDays < 3) {
+    if(endDay.difference(day).inDays.abs() < 3) {
       endDay = day;
       return true;
     }
     return false;
   }
 
-  List<Period> getPredictedPeriods(int monthsInFuture, Stats stats) {
-    List<Period> periods = List.empty(growable: true);
-    DateTime startDay = DateTime.now();
-    Duration periodDuration = Duration(days: stats.periodLength);
-    Duration cycleDuration = Duration(days: stats.cycleLength);
-    for(int month = 0; month < monthsInFuture; month++) {
-      Period period = Period(startDay: startDay, endDay: startDay.add(periodDuration));
-      periods.add(period);
-      startDay = startDay.add(cycleDuration);
+  List<DateTime> getDatesInPeriod() {
+    List<DateTime> dates = List.empty(growable: true);
+    DateTime date = startDay;
+    Duration day = const Duration(days: 1);
+    while(date != endDay) {
+      dates.add(date);
+      date = date.add(day);
     }
-    return periods;
+    dates.add(endDay);
+    return dates;
+  }
+
+  // Implement toString to make it easier to see information about
+  // each period when using the print statement.
+  @override
+  String toString() {
+    return 'Period {start date: $startDay, end date: $endDay}';
   }
 }

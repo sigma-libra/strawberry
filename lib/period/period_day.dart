@@ -34,9 +34,9 @@ class PeriodDay {
   }
 
   // Implement toString to make it easier to see information about
-  // each period when using the print statement.
+  // each period day when using the print statement.
   @override
   String toString() {
-    return 'Period{id: $id, date: $date}';
+    return 'Period day {id: $id, date: $date}';
   }
 }

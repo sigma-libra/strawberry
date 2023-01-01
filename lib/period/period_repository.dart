@@ -41,33 +41,6 @@ class PeriodRepository {
     });
   }
 
-  Future<Stats> getStats() async {
-    final List<DateTime> days = await getPeriodDates();
-    days.sort();
-
-    final List<Period> periods = List.empty(growable: true);
-    for (DateTime day in days) {
-      Period? newPeriod = periods.firstWhereOrNull((period) => period.addToEndOfPeriod(day));
-      if(newPeriod == null) {
-        periods.add(Period(startDay: day, endDay: day));
-      }
-    }
-
-    if(periods.length < 3) {
-      return Stats.avgStats();
-    }
-
-    final List<int> cycleLengths = List.empty(growable: true);
-    final List<int> periodLengths = List.empty(growable: true);
-    for(int i = 0; i < periods.length - 1; i++) {
-      cycleLengths.add(periods[i].startDay.difference(periods[i + 1].startDay).inDays);
-      periodLengths.add(periods[i].startDay.difference(periods[i].endDay).inDays);
-    }
-    periodLengths.add(periods[periods.length - 1].startDay.difference(periods[periods.length - 1].endDay).inDays);
-    Stats stats = Stats(cycleLength: cycleLengths.average.round(), periodLength: periodLengths.average.round());
-    return stats;
-  }
-
   Future<void> updatePeriod(PeriodDay period) async {
     await database.update(
       tableName,
