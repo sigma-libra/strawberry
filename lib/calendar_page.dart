@@ -17,7 +17,7 @@ class Calendar extends StatefulWidget {
 }
 
 class CalendarState extends State<Calendar> {
-  DateTime _focusedDay = DateTime.now();
+  DateTime _focusedDay = DateTime.now().add(Duration(days: 4));
   DateTime? _selectedDay;
 
   @override
@@ -62,6 +62,7 @@ class CalendarState extends State<Calendar> {
       firstDay: DateTime.utc(1970),
       lastDay: DateTime.utc(2100),
       focusedDay: _focusedDay,
+      currentDay: DateTime.utc(1970),
       calendarFormat: CalendarFormat.month,
       startingDayOfWeek: StartingDayOfWeek.monday,
       selectedDayPredicate: (day) {
@@ -89,15 +90,18 @@ class CalendarState extends State<Calendar> {
         defaultBuilder: (context, day, focusedDay) {
           for (DateTime d in periods) {
             if (isSameDay(day, d)) {
-              return markDay(day, Colors.red);
+              return markDay(day, Colors.red, Colors.white);
             }
           }
           List<DateTime> futurePeriods =
               widget.service.getPredictedPeriods(12, periods);
           for (DateTime d in futurePeriods) {
             if (isSameDay(day, d)) {
-              return markDay(day, Colors.grey);
+              return markDay(day, Colors.amberAccent, Colors.white);
             }
+          }
+          if(isSameDay(day, DateTime.now())) {
+            return markDay(day, Colors.white, Colors.black);
           }
           return null;
         },
@@ -105,15 +109,20 @@ class CalendarState extends State<Calendar> {
     );
   }
 
-  Container markDay(DateTime day, MaterialColor dayColor) {
+  Container markDay(DateTime day, Color dayColor, Color numberColor) {
+    var borderColor = dayColor;
+    if(isSameDay(day, DateTime.now())) {
+      borderColor = Colors.blueAccent;
+    }
     return Container(
       decoration: BoxDecoration(
         color: dayColor,
+        border:Border.all(color: borderColor, width: 5.0)
       ),
       child: Center(
         child: Text(
           '${day.day}',
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: numberColor),
         ),
       ),
     );
