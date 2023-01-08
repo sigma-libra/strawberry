@@ -17,9 +17,16 @@ class PeriodService {
     Stats stats = getStats(pastPeriods);
     List<DateTime> dates = List.empty(growable: true);
 
-    Period lastPeriod = pastPeriods.last;
     Duration cycleDuration = Duration(days: stats.cycleLength);
-    Duration periodDuration = Duration(days: stats.periodLength);
+    Duration periodDuration = Duration(days: stats.periodLength - 1);
+
+    Period lastPeriod = pastPeriods.last;
+    int periodLeft = periodDuration.inDays - lastPeriod.endDay.difference(lastPeriod.startDay).inDays;
+
+    for(int left = 1; left < periodLeft; left++) {
+      dates.add(lastPeriod.endDay.add(Duration(days: left)));
+    }
+
     for(int month = 0; month < monthsInFuture; month++) {
       Period period = Period(startDay: lastPeriod.startDay.add(cycleDuration), endDay: lastPeriod.startDay.add(cycleDuration).add(periodDuration));
       List<DateTime> daysInPeriod = period.getDatesInPeriod();

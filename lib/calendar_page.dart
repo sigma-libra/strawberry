@@ -97,7 +97,7 @@ class CalendarState extends State<Calendar> {
               widget.service.getPredictedPeriods(12, periods);
           for (DateTime d in futurePeriods) {
             if (isSameDay(day, d)) {
-              return markDay(day, Colors.amberAccent, Colors.white);
+              return markDay(day, Colors.amberAccent, Colors.black);
             }
           }
           if(isSameDay(day, DateTime.now())) {
