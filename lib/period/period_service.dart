@@ -9,13 +9,13 @@ import 'package:strawberry/period/stats.dart';
 
 class PeriodService {
 
-  List<DateTime> getPredictedPeriods(int monthsInFuture, List<DateTime> pastDays) {
+  Map<DateTime, bool> getPredictedPeriods(int monthsInFuture, List<DateTime> pastDays) {
     final List<Period> pastPeriods = getPeriods(pastDays);
     if(pastPeriods.isEmpty) {
-      return List.empty();
+      return {};
     }
     Stats stats = getStats(pastPeriods);
-    List<DateTime> dates = List.empty(growable: true);
+    Map<DateTime, bool> dates = {};
 
     Duration cycleDuration = Duration(days: stats.cycleLength);
     Duration periodDuration = Duration(days: stats.periodLength - 1);
@@ -24,18 +24,25 @@ class PeriodService {
     int periodLeft = periodDuration.inDays - lastPeriod.endDay.difference(lastPeriod.startDay).inDays;
 
     for(int left = 1; left < periodLeft; left++) {
-      dates.add(lastPeriod.endDay.add(Duration(days: left)));
+      DateTime dateInCurrentPeriod = lastPeriod.endDay.add(Duration(days: left));
+      dates[dateInCurrentPeriod] = false;
     }
 
     for(int month = 0; month < monthsInFuture; month++) {
       Period period = Period(startDay: lastPeriod.startDay.add(cycleDuration), endDay: lastPeriod.startDay.add(cycleDuration).add(periodDuration));
       List<DateTime> daysInPeriod = period.getDatesInPeriod();
-      dates.addAll(daysInPeriod);
+      for(int day = 0; day < daysInPeriod.length; day++) {
+        if(month == 0 && day == 0) {
+          dates[daysInPeriod[day]] = true;
+        } else {
+          dates[daysInPeriod[day]] = false;
+        }
+      }
       lastPeriod = period;
     }
     return dates;
   }
-
+  
   List<Period> getPeriods(List<DateTime> dates) {
     dates.sort();
     final List<Period> periods = List.empty(growable: true);

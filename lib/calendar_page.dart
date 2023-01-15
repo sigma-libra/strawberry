@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strawberry/local_notifications_service.dart';
 import 'package:strawberry/period/period.dart';
 import 'package:strawberry/period/period_day.dart';
 import 'package:strawberry/period/period_repository.dart';
@@ -7,17 +8,22 @@ import 'package:strawberry/period/stats.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Calendar extends StatefulWidget {
-  const Calendar({super.key, required this.repository, required this.service});
+  const Calendar(
+      {super.key,
+      required this.repository,
+      required this.service,
+      required this.notificationService});
 
   final PeriodRepository repository;
   final PeriodService service;
+  final LocalNotificationService notificationService;
 
   @override
   CalendarState createState() => CalendarState();
 }
 
 class CalendarState extends State<Calendar> {
-  DateTime _focusedDay = DateTime.now().add(Duration(days: 4));
+  DateTime _focusedDay = DateTime.now().add(const Duration(days: 4));
   DateTime? _selectedDay;
 
   @override
@@ -80,7 +86,10 @@ class CalendarState extends State<Calendar> {
           } else {
             widget.repository.insertPeriod(PeriodDay.create(selectedDay));
           }
+          widget.notificationService.showNotification(
+              id: 0, title: "Test notification", body: "Testing on insert/delete");
         });
+
       },
       onPageChanged: (focusedDay) {
         // No need to call `setState()` here
@@ -93,16 +102,27 @@ class CalendarState extends State<Calendar> {
               return markDay(day, Colors.red, Colors.white);
             }
           }
-          List<DateTime> futurePeriods =
+          Map<DateTime, bool> futurePeriods =
               widget.service.getPredictedPeriods(12, periods);
-          for (DateTime d in futurePeriods) {
+
+          for (DateTime d in futurePeriods.keys) {
             if (isSameDay(day, d)) {
               return markDay(day, Colors.amberAccent, Colors.black);
             }
           }
-          if(isSameDay(day, DateTime.now())) {
+          if (isSameDay(day, DateTime.now())) {
             return markDay(day, Colors.white, Colors.black);
           }
+          DateTime nextPeriodStart =
+              futurePeriods.entries.firstWhere((element) => element.value).key.add(const Duration(hours: 7));
+
+          widget.notificationService.clearOldNotifications();
+          widget.notificationService.showScheduledNotification(
+              id: 0,
+              title: "test",
+              body: "Test scheduled",
+              date: nextPeriodStart);
+
           return null;
         },
       ),
@@ -111,14 +131,12 @@ class CalendarState extends State<Calendar> {
 
   Container markDay(DateTime day, Color dayColor, Color numberColor) {
     var borderColor = dayColor;
-    if(isSameDay(day, DateTime.now())) {
+    if (isSameDay(day, DateTime.now())) {
       borderColor = Colors.blueAccent;
     }
     return Container(
       decoration: BoxDecoration(
-        color: dayColor,
-        border:Border.all(color: borderColor, width: 5.0)
-      ),
+          color: dayColor, border: Border.all(color: borderColor, width: 5.0)),
       child: Center(
         child: Text(
           '${day.day}',

@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:strawberry/calendar_page.dart';
+import 'package:strawberry/local_notifications_service.dart';
 import 'package:strawberry/period/period_repository.dart';
 import 'package:strawberry/period/period_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  PeriodService service = PeriodService();
+  PeriodService periodService = PeriodService();
   PeriodRepository repository = PeriodRepository();
   await repository.initDatabase();
+  final LocalNotificationService notificationService = LocalNotificationService();
+  await notificationService.initialize();
   initializeDateFormatting().then((_) => runApp(MyApp(
         repository: repository,
-        service: service,
+        periodService: periodService,
+        notificationService: notificationService
       )));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.repository, required this.service});
+  const MyApp({super.key, required this.repository, required this.periodService, required this.notificationService});
 
   final PeriodRepository repository;
-  final PeriodService service;
+  final PeriodService periodService;
+  final LocalNotificationService notificationService;
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +35,19 @@ class MyApp extends StatelessWidget {
       ),
       home: StartPage(
         repository: repository,
-        service: service,
+        service: periodService,
+        notificationService: notificationService,
       ),
     );
   }
 }
 
 class StartPage extends StatefulWidget {
-  const StartPage({super.key, required this.repository, required this.service});
+  const StartPage({super.key, required this.repository, required this.service, required this.notificationService});
 
   final PeriodRepository repository;
   final PeriodService service;
+  final LocalNotificationService notificationService;
 
   @override
   StartPageState createState() => StartPageState();
@@ -56,6 +63,7 @@ class StartPageState extends State<StartPage> {
         body: Calendar(
           repository: widget.repository,
           service: widget.service,
+          notificationService: widget.notificationService,
         ));
   }
 }
