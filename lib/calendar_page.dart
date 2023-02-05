@@ -89,9 +89,10 @@ class CalendarState extends State<Calendar> {
             widget.repository.insertPeriod(PeriodDay.create(selectedDay));
           }
           widget.notificationService.showNotification(
-              id: testId, title: "Test notification", body: "Testing on insert/delete");
+              id: testId,
+              title: "Test notification",
+              body: "Testing on insert/delete");
         });
-
       },
       onPageChanged: (focusedDay) {
         // No need to call `setState()` here
@@ -115,16 +116,18 @@ class CalendarState extends State<Calendar> {
           if (isSameDay(day, DateTime.now())) {
             return markDay(day, Colors.white, Colors.black);
           }
-          if(futurePeriods.isNotEmpty) {
-            DateTime nextPeriodStart =
-            futurePeriods.entries.firstWhere((element) => element.value).key.add(const Duration(hours: 7));
+          if (futurePeriods.isNotEmpty) {
+            DateTime nextPeriodStart = futurePeriods.entries
+                .firstWhere((element) => element.value)
+                .key
+                .add(const Duration(hours: 7));
+            setNewNextPeriodStartNotification(nextPeriodStart);
 
-            widget.notificationService.clearOldPeriodStartNotifications();
-            widget.notificationService.showScheduledNotification(
-                id: periodStartId,
-                title: "test",
-                body: "Test scheduled",
-                date: nextPeriodStart);
+            List<DateTime> periodContinuations = futurePeriods.entries
+                .where((element) => !element.value)
+                .map((e) => e.key)
+                .toList();
+            setNewPeriodEndCheckNotification(periodContinuations);
           }
 
           return null;
@@ -169,5 +172,25 @@ class CalendarState extends State<Calendar> {
         )
       ],
     ));
+  }
+
+  void setNewNextPeriodStartNotification(DateTime nextPeriodStart) {
+    widget.notificationService.clearOldPeriodStartNotifications();
+    widget.notificationService.showScheduledNotification(
+        id: periodStartId,
+        title: "Period start",
+        body: "Your period is scheduled to start today",
+        date: nextPeriodStart);
+  }
+
+  void setNewPeriodEndCheckNotification(List<DateTime> dates) {
+    widget.notificationService.clearOldPeriodEndCheckNotifications();
+    for (DateTime date in dates) {
+      widget.notificationService.showScheduledNotification(
+          id: periodEndCheckId,
+          title: "Period ended?",
+          body: "Do you still have your period today?",
+          date: date);
+    }
   }
 }
