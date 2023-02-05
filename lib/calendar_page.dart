@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:strawberry/local_notifications_service.dart';
 import 'package:strawberry/period/period.dart';
@@ -42,7 +40,7 @@ class CalendarState extends State<Calendar> {
           if (snapshot.hasError) {
             return Text(
               'There was an error :(',
-              style: Theme.of(context).textTheme.headline1,
+              style: Theme.of(context).textTheme.displayLarge,
             );
           } else if (snapshot.hasData) {
             return Column(
