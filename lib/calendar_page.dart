@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:strawberry/local_notifications_service.dart';
 import 'package:strawberry/period/period.dart';
@@ -87,7 +89,7 @@ class CalendarState extends State<Calendar> {
             widget.repository.insertPeriod(PeriodDay.create(selectedDay));
           }
           widget.notificationService.showNotification(
-              id: 0, title: "Test notification", body: "Testing on insert/delete");
+              id: testId, title: "Test notification", body: "Testing on insert/delete");
         });
 
       },
@@ -113,15 +115,17 @@ class CalendarState extends State<Calendar> {
           if (isSameDay(day, DateTime.now())) {
             return markDay(day, Colors.white, Colors.black);
           }
-          DateTime nextPeriodStart =
-              futurePeriods.entries.firstWhere((element) => element.value).key.add(const Duration(hours: 7));
+          if(futurePeriods.isNotEmpty) {
+            DateTime nextPeriodStart =
+            futurePeriods.entries.firstWhere((element) => element.value).key.add(const Duration(hours: 7));
 
-          widget.notificationService.clearOldNotifications();
-          widget.notificationService.showScheduledNotification(
-              id: 0,
-              title: "test",
-              body: "Test scheduled",
-              date: nextPeriodStart);
+            widget.notificationService.clearOldPeriodStartNotifications();
+            widget.notificationService.showScheduledNotification(
+                id: periodStartId,
+                title: "test",
+                body: "Test scheduled",
+                date: nextPeriodStart);
+          }
 
           return null;
         },
