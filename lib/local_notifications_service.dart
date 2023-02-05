@@ -3,6 +3,10 @@ import 'package:rxdart/subjects.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
+const int testId = 0;
+const periodStartId = 1;
+const periodEndCheckId = 2;
+
 class LocalNotificationService {
   LocalNotificationService();
 
@@ -76,7 +80,11 @@ class LocalNotificationService {
     );
   }
 
-  Future<void> clearOldNotifications() async {
-    await _localNotificationService.cancelAll();
+  Future<void> clearOldPeriodStartNotifications() async {
+    await _localNotificationService.cancel(periodStartId);
+  }
+
+  Future<void> clearOldPeriodEndCheckNotifications() async {
+    await _localNotificationService.cancel(periodEndCheckId);
   }
 }
