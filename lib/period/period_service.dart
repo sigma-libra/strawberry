@@ -1,19 +1,19 @@
 import 'package:collection/collection.dart';
+import 'package:strawberry/period/day_type.dart';
 import 'package:strawberry/period/period.dart';
 import 'package:strawberry/period/stats.dart';
 
 class PeriodService {
 
-  /// Fetch the predicted period days for the future
-  /// and whether they are part of the next period.
-  Map<DateTime, bool> getPredictedPeriods(
+  /// Fetch the predicted period days and their type for the future
+  Map<DateTime, DayType> getPredictedPeriods(
       int numberOfCycles, List<DateTime> pastDays, DateTime currentDay) {
     final List<Period> pastPeriods = getSortedPeriods(pastDays);
     if (pastPeriods.isEmpty) {
       return {};
     }
     Stats stats = getStats(pastPeriods);
-    Map<DateTime, bool> dates = {};
+    Map<DateTime, DayType> dates = {};
 
     Duration cycleDuration = Duration(days: stats.cycleLength);
     Duration periodDuration = Duration(days: stats.periodLength);
@@ -28,7 +28,7 @@ class PeriodService {
     for (int left = 1; left < lastPeriodDaysLeft; left++) {
       DateTime dateInCurrentPeriod =
           lastPeriod.endDay.add(Duration(days: left));
-      dates[dateInCurrentPeriod] = false;
+      dates[dateInCurrentPeriod] = DayType.IN_CURRENT_PERIOD;
     }
 
     for (int cycle = 0; cycle < numberOfCycles; cycle++) {
@@ -38,9 +38,9 @@ class PeriodService {
       List<DateTime> datesInPeriod = period.getDatesInPeriod();
       for (int date = 0; date < datesInPeriod.length; date++) {
         if (cycle == 0 && date == 0) {
-          dates[datesInPeriod[date]] = true;
+          dates[datesInPeriod[date]] = DayType.START_OF_NEXT_PERIOD;
         } else {
-          dates[datesInPeriod[date]] = false;
+          dates[datesInPeriod[date]] = DayType.PERIOD;
         }
       }
       lastPeriod = period;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strawberry/local_notifications_service.dart';
+import 'package:strawberry/period/day_type.dart';
 import 'package:strawberry/period/period.dart';
 import 'package:strawberry/period/period_day.dart';
 import 'package:strawberry/period/period_repository.dart';
@@ -65,12 +66,13 @@ class CalendarState extends State<Calendar> {
       availableCalendarFormats: const {
         CalendarFormat.month: 'Month',
       },
-      firstDay: DateTime.utc(1970),
+      firstDay: DateTime.utc(2000),
       lastDay: DateTime.utc(2100),
       focusedDay: _focusedDay,
-      currentDay: DateTime.utc(1970),
+      currentDay: DateTime.utc(2000),
       calendarFormat: CalendarFormat.month,
       startingDayOfWeek: StartingDayOfWeek.monday,
+      sixWeekMonthsEnforced: true,
       selectedDayPredicate: (day) {
         // Use `selectedDayPredicate` to determine which day is currently selected.
         // If this returns true, then `day` will be marked as selected.
@@ -103,7 +105,7 @@ class CalendarState extends State<Calendar> {
               return markDay(day, Colors.red, Colors.white);
             }
           }
-          Map<DateTime, bool> futurePeriods =
+          Map<DateTime, DayType> futurePeriods =
               widget.service.getPredictedPeriods(12, periods, DateTime.now());
 
           for (DateTime d in futurePeriods.keys) {
@@ -116,13 +118,13 @@ class CalendarState extends State<Calendar> {
           }
           if (futurePeriods.isNotEmpty) {
             DateTime nextPeriodStart = futurePeriods.entries
-                .firstWhere((element) => element.value)
+                .firstWhere((element) => element.value == DayType.START_OF_NEXT_PERIOD)
                 .key
                 .add(const Duration(hours: 7));
             setNewNextPeriodStartNotification(nextPeriodStart);
 
             List<DateTime> periodContinuations = futurePeriods.entries
-                .where((element) => !element.value)
+                .where((element) => element.value == DayType.IN_CURRENT_PERIOD)
                 .map((e) => e.key)
                 .toList();
             setNewPeriodEndCheckNotification(periodContinuations);
