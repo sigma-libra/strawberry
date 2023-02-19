@@ -59,11 +59,76 @@ class StartPageState extends State<StartPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Strawberry'),
+          actions: [
+            PopupMenuButton(
+              // add icon, by default "3 dot" icon
+              // icon: Icon(Icons.book)
+                itemBuilder: (context){
+                  return [
+                    const PopupMenuItem<int>(
+                      value: 0,
+                      child: Text("Upload/Download"),
+                    ),
+
+                    const PopupMenuItem<int>(
+                      value: 1,
+                      child: Text("Settings"),
+                    ),
+
+                    const PopupMenuItem<int>(
+                      value: 2,
+                      child: Text("Delete All"),
+                    ),
+                  ];
+                },
+                onSelected:(value){
+                  if(value == 0){
+                    print("My account menu is selected.");
+                  }else if(value == 1){
+                    print("Settings menu is selected.");
+                  }else if(value == 2){
+                    _delete(context);
+                  }
+                }
+            ),
+          ],
         ),
         body: Calendar(
           repository: widget.repository,
           service: widget.service,
           notificationService: widget.notificationService,
         ));
+  }
+
+  void _delete(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to delete all data? This action cannot be reversed.'),
+            actions: [
+              // The "Yes" button
+              TextButton(
+                  onPressed: () {
+                    // Remove the box
+                    setState(() {
+                      widget.repository.truncate();
+                      widget.notificationService.clearAll();
+                    });
+
+                    // Close the dialog
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Yes')),
+              TextButton(
+                  onPressed: () {
+                    // Close the dialog
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('No'))
+            ],
+          );
+        });
   }
 }

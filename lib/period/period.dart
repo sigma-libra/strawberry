@@ -13,7 +13,7 @@ class Period {
   });
 
   bool addToEndOfPeriod(DateTime day) {
-    if(startDay.difference(day).inDays.abs() < 1 || endDay.difference(day).inDays.abs() < 1 || (startDay.isBefore(day) && endDay.isAfter(day))) {
+    if(isInPeriod(day)) {
       return true;
     }
     if(endDay.difference(day).inDays.abs() < 3) {
@@ -25,13 +25,12 @@ class Period {
 
   List<DateTime> getDatesInPeriod() {
     List<DateTime> dates = List.empty(growable: true);
+    Duration dayConstant = const Duration(days: 1);
     DateTime date = startDay;
-    Duration day = const Duration(days: 1);
-    while(date != endDay) {
+    while(date.isBefore(endDay)) {
       dates.add(date);
-      date = date.add(day);
+      date = date.add(dayConstant);
     }
-    dates.add(endDay);
     return dates;
   }
 
@@ -40,5 +39,13 @@ class Period {
   @override
   String toString() {
     return 'Period {start date: $startDay, end date: $endDay}';
+  }
+
+  bool _isSameDay(DateTime firstDay, DateTime secondDay) {
+    return firstDay.difference(secondDay).inDays.abs() == 0;
+  }
+
+  isInPeriod(DateTime day) {
+    return _isSameDay(startDay, day) || _isSameDay(endDay, day) || (startDay.isBefore(day) && endDay.isAfter(day));
   }
 }

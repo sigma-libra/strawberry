@@ -87,4 +87,8 @@ class LocalNotificationService {
   Future<void> clearOldPeriodEndCheckNotifications() async {
     await _localNotificationService.cancel(periodEndCheckId);
   }
+
+  Future<void> clearAll() async {
+    await _localNotificationService.cancelAll();
+  }
 }

@@ -86,10 +86,10 @@ class CalendarState extends State<Calendar> {
           } else {
             widget.repository.insertPeriod(PeriodDay.create(selectedDay));
           }
-          widget.notificationService.showNotification(
-              id: testId,
-              title: "Test notification",
-              body: "Testing on insert/delete");
+          // widget.notificationService.showNotification(
+          //     id: testId,
+          //     title: "Test notification",
+          //     body: "Testing on insert/delete");
         });
       },
       onPageChanged: (focusedDay) {
@@ -104,7 +104,7 @@ class CalendarState extends State<Calendar> {
             }
           }
           Map<DateTime, bool> futurePeriods =
-              widget.service.getPredictedPeriods(12, periods);
+              widget.service.getPredictedPeriods(12, periods, DateTime.now());
 
           for (DateTime d in futurePeriods.keys) {
             if (isSameDay(day, d)) {
@@ -152,7 +152,7 @@ class CalendarState extends State<Calendar> {
   }
 
   Widget makeStatsPage(List<DateTime> periodDays) {
-    List<Period> periods = widget.service.getPeriods(periodDays);
+    List<Period> periods = widget.service.getSortedPeriods(periodDays);
     Stats stats = widget.service.getStats(periods);
     return Flexible(
         child: ListView(

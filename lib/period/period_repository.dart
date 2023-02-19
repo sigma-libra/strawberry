@@ -25,6 +25,10 @@ class PeriodRepository {
     );
   }
 
+  Future<void> truncate() async {
+    await database.delete(tableName);
+  }
+
   Future<void> insertPeriod(PeriodDay period) async {
     await database.insert(
       tableName,
