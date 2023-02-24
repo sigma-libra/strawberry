@@ -88,10 +88,12 @@ class CalendarState extends State<Calendar> {
           } else {
             widget.repository.insertPeriod(PeriodDay.create(selectedDay));
           }
-          // widget.notificationService.showNotification(
+          // widget.notificationService.showScheduledNotification(
           //     id: testId,
-          //     title: "Test notification",
-          //     body: "Testing on insert/delete");
+          //      title: "Test notification",
+          //      body: "Testing after 10 seconds",
+          //   date: DateTime.now().add(Duration(seconds: 10))
+          // );
         });
       },
       onPageChanged: (focusedDay) {
@@ -185,12 +187,13 @@ class CalendarState extends State<Calendar> {
 
   void setNewPeriodEndCheckNotification(List<DateTime> dates) {
     widget.notificationService.clearOldPeriodEndCheckNotifications();
-    for (DateTime date in dates) {
+    for (int i = 0; i < dates.length; i++) {
+      DateTime date = dates[i];
       widget.notificationService.showScheduledNotification(
-          id: periodEndCheckId,
+          id: periodEndCheckIdRange + i,
           title: "Period ended?",
           body: "Do you still have your period today?",
-          date: date);
+          date: date.add(const Duration(hours: 7)));
     }
   }
 }

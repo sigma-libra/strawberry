@@ -3,8 +3,8 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
 const int testId = 0;
-const periodStartId = 1;
-const periodEndCheckId = 2;
+const periodStartId = 100;
+const periodEndCheckIdRange = 200;
 
 class LocalNotificationService {
   LocalNotificationService();
@@ -44,9 +44,9 @@ class LocalNotificationService {
   Future<NotificationDetails> _notificationDetails() async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-      "period_start_notification_channel_id",
-      "period_start_notification_channel_name",
-      channelDescription: "Channel for notification of period start",
+      "period_day_notification_channel_id",
+      "period_day_notification_channel_name",
+      channelDescription: "Channel for notification of period days",
       importance: Importance.max,
       priority: Priority.max,
       playSound: true,
@@ -69,14 +69,15 @@ class LocalNotificationService {
       required String title,
       required String body,
       required DateTime date}) async {
-    final details = await _notificationDetails();
-    final tz.TZDateTime dateTime = tz.TZDateTime.from(date, tz.local);
-    await _localNotificationService.zonedSchedule(
-        id, title, body, dateTime, details,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true
-    );
+    if (date.isAfter(DateTime.now())) {
+      final details = await _notificationDetails();
+      final tz.TZDateTime dateTime = tz.TZDateTime.from(date, tz.local);
+      await _localNotificationService.zonedSchedule(
+          id, title, body, dateTime, details,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          androidAllowWhileIdle: true);
+    }
   }
 
   Future<void> clearOldPeriodStartNotifications() async {
@@ -84,7 +85,13 @@ class LocalNotificationService {
   }
 
   Future<void> clearOldPeriodEndCheckNotifications() async {
-    await _localNotificationService.cancel(periodEndCheckId);
+    List<ActiveNotification> notifications = await _localNotificationService.getActiveNotifications();
+    for(ActiveNotification notification in notifications) {
+      int id = notification.id;
+      if(id >= periodEndCheckIdRange) {
+        await _localNotificationService.cancel(id);
+      }
+    }
   }
 
   Future<void> clearAll() async {
