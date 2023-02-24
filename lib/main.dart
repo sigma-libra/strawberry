@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:strawberry/calendar_page.dart';
-import 'package:strawberry/local_notifications_service.dart';
-import 'package:strawberry/period/period_repository.dart';
-import 'package:strawberry/period/period_service.dart';
+import 'package:strawberry/calendar/calendar_page.dart';
+import 'package:strawberry/notification/local_notifications_service.dart';
+import 'package:strawberry/period/repository/period_repository.dart';
+import 'package:strawberry/period/service/period_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

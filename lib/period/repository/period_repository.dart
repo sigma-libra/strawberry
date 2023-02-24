@@ -1,11 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:strawberry/period/database_constants.dart';
-import 'package:strawberry/period/period.dart';
-import 'package:strawberry/period/period_constants.dart';
-import 'package:strawberry/period/period_day.dart';
+import 'package:strawberry/period/repository/database_constants.dart';
+import 'package:strawberry/period/model/period.dart';
+import 'package:strawberry/period/model/period_constants.dart';
+import 'package:strawberry/period/model/period_day.dart';
 import 'package:path/path.dart';
-import 'package:strawberry/period/stats.dart';
+import 'package:strawberry/period/model/stats.dart';
 
 class PeriodRepository {
   late Database database;

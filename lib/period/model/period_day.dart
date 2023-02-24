@@ -2,7 +2,7 @@
 // end day
 import 'dart:math';
 
-import 'package:strawberry/period/database_constants.dart';
+import 'package:strawberry/period/repository/database_constants.dart';
 
 class PeriodDay {
   late int id;

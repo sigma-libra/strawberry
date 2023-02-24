@@ -1,4 +1,4 @@
-enum DayType {
+enum DateType {
   IN_CURRENT_PERIOD,
   START_OF_NEXT_PERIOD,
   PERIOD

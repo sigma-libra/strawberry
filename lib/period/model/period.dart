@@ -1,8 +1,3 @@
-// start day
-// end day
-
-
-
 class Period {
   DateTime startDay;
   DateTime endDay;
@@ -12,7 +7,7 @@ class Period {
     required this.endDay
   });
 
-  bool addToEndOfPeriod(DateTime day) {
+  bool includeInPeriod(DateTime day) {
     if(isInPeriod(day)) {
       return true;
     }

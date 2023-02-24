@@ -3,7 +3,7 @@
 
 
 
-import 'package:strawberry/period/period_constants.dart';
+import 'package:strawberry/period/model/period_constants.dart';
 
 class Stats {
   late int cycleLength;
