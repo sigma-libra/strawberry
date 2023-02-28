@@ -114,6 +114,6 @@ class PeriodService {
   }
 
   int _getNumberOfDaysBetweenDates(DateTime startDay, DateTime endDay) {
-    return endDay.difference(startDay).inDays.abs();
+    return endDay.difference(startDay).inDays.abs() + 1;
   }
 }
