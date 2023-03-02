@@ -71,7 +71,7 @@ class LocalNotificationService {
       required DateTime date}) async {
     if (date.isAfter(DateTime.now())) {
       final details = await _notificationDetails();
-      final tz.TZDateTime dateTime = tz.TZDateTime.from(date, tz.local);
+      final tz.TZDateTime dateTime = tz.TZDateTime.from(date, tz.getLocation(DateTime.now().timeZoneName));
       await _localNotificationService.zonedSchedule(
           id, title, body, dateTime, details,
           uiLocalNotificationDateInterpretation:
