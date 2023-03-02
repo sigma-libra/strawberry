@@ -85,8 +85,8 @@ class LocalNotificationService {
   }
 
   Future<void> clearOldPeriodEndCheckNotifications() async {
-    List<ActiveNotification> notifications = await _localNotificationService.getActiveNotifications();
-    for(ActiveNotification notification in notifications) {
+    List<PendingNotificationRequest> notifications = await _localNotificationService.pendingNotificationRequests();
+    for(PendingNotificationRequest notification in notifications) {
       int id = notification.id;
       if(id >= periodEndCheckIdRange) {
         await _localNotificationService.cancel(id);
