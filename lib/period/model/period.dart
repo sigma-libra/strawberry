@@ -47,7 +47,8 @@ class Period {
 
   ListTile asListTile() {
     return ListTile(
-      leading: Text("${_dateString(startDay)} - ${_dateString(endDay)}"),
+      title: Text("${_dateString(startDay)} - ${_dateString(endDay)}"),
+      tileColor: Colors.amber,
     );
   }
 

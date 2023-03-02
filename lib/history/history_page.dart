@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:strawberry/period/model/period.dart';
-import 'package:strawberry/period/model/period_day.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 
@@ -32,22 +31,23 @@ class HistoryPageState extends State<HistoryPage> {
                 appBar: AppBar(
                   title: const Text("History"),
                 ),
-                body: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [_makeHistoryList(snapshot.requireData.toList())],
-                ));
+                body: _makeHistoryList(snapshot.requireData.toList()));
           } else {
             return const CircularProgressIndicator();
           }
         });
   }
 
-  Widget _makeHistoryList(List<DateTime> periodDays) {
-    List<Period> periods = widget.service.getSortedPeriods(periodDays).reversed.toList();
-    List<ListTile> tiles = periods.map((period) => period.asListTile()).toList();
-    return Flexible(
-        child: ListView(
-      children: tiles
-    ));
+  ListView _makeHistoryList(List<DateTime> periodDays) {
+    List<Period> periods =
+        widget.service.getSortedPeriods(periodDays).reversed.toList();
+    return ListView.builder(
+        itemCount: periods.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: periods[index].asListTile(),
+          );
+        },
+    );
   }
 }
