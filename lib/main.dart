@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:strawberry/calendar/calendar_page.dart';
+import 'package:strawberry/history/history_page.dart';
 import 'package:strawberry/notification/local_notifications_service.dart';
+import 'package:strawberry/period/model/period.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 
@@ -10,17 +12,21 @@ void main() async {
   PeriodService periodService = PeriodService();
   PeriodRepository repository = PeriodRepository();
   await repository.initDatabase();
-  final LocalNotificationService notificationService = LocalNotificationService();
+  final LocalNotificationService notificationService =
+      LocalNotificationService();
   await notificationService.initialize();
   initializeDateFormatting().then((_) => runApp(MyApp(
-        repository: repository,
-        periodService: periodService,
-        notificationService: notificationService
-      )));
+      repository: repository,
+      periodService: periodService,
+      notificationService: notificationService)));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.repository, required this.periodService, required this.notificationService});
+  const MyApp(
+      {super.key,
+      required this.repository,
+      required this.periodService,
+      required this.notificationService});
 
   final PeriodRepository repository;
   final PeriodService periodService;
@@ -43,7 +49,11 @@ class MyApp extends StatelessWidget {
 }
 
 class StartPage extends StatefulWidget {
-  const StartPage({super.key, required this.repository, required this.service, required this.notificationService});
+  const StartPage(
+      {super.key,
+      required this.repository,
+      required this.service,
+      required this.notificationService});
 
   final PeriodRepository repository;
   final PeriodService service;
@@ -61,36 +71,32 @@ class StartPageState extends State<StartPage> {
           title: const Text('Strawberry'),
           actions: [
             PopupMenuButton(
-              // add icon, by default "3 dot" icon
-              // icon: Icon(Icons.book)
-                itemBuilder: (context){
-                  return [
-                    const PopupMenuItem<int>(
-                      value: 0,
-                      child: Text("Upload/Download"),
-                    ),
-
-                    const PopupMenuItem<int>(
-                      value: 1,
-                      child: Text("Settings"),
-                    ),
-
-                    const PopupMenuItem<int>(
-                      value: 2,
-                      child: Text("Delete All"),
-                    ),
-                  ];
-                },
-                onSelected:(value){
-                  if(value == 0){
-                    print("My account menu is selected.");
-                  }else if(value == 1){
-                    print("Settings menu is selected.");
-                  }else if(value == 2){
-                    _delete(context);
-                  }
-                }
-            ),
+                // add icon, by default "3 dot" icon
+                // icon: Icon(Icons.book)
+                itemBuilder: (context) {
+              return [
+                const PopupMenuItem<int>(
+                  value: 0,
+                  child: Text("History"),
+                ),
+                const PopupMenuItem<int>(
+                  value: 1,
+                  child: Text("Settings"),
+                ),
+                const PopupMenuItem<int>(
+                  value: 2,
+                  child: Text("Delete All"),
+                ),
+              ];
+            }, onSelected: (value) {
+              if (value == 0) {
+                _showHistory(context);
+              } else if (value == 1) {
+                print("Settings menu is selected.");
+              } else if (value == 2) {
+                _delete(context);
+              }
+            }),
           ],
         ),
         body: Calendar(
@@ -106,7 +112,8 @@ class StartPageState extends State<StartPage> {
         builder: (BuildContext ctx) {
           return AlertDialog(
             title: const Text('Please Confirm'),
-            content: const Text('Are you sure to delete all data? This action cannot be reversed.'),
+            content: const Text(
+                'Are you sure to delete all data? This action cannot be reversed.'),
             actions: [
               // The "Yes" button
               TextButton(
@@ -130,5 +137,16 @@ class StartPageState extends State<StartPage> {
             ],
           );
         });
+  }
+
+  void _showHistory(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => HistoryPage(
+                repository: widget.repository,
+                service: widget.service,
+              )),
+    );
   }
 }

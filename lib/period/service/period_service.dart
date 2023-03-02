@@ -4,6 +4,7 @@ import 'package:strawberry/period/model/period.dart';
 import 'package:strawberry/period/model/stats.dart';
 
 class PeriodService {
+
   List<Period> getSortedPeriods(List<DateTime> dates) {
     dates.sort();
     final List<Period> periods = List.empty(growable: true);
