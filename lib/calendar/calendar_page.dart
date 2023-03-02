@@ -45,11 +45,12 @@ class CalendarState extends State<Calendar> {
               style: Theme.of(context).textTheme.displayLarge,
             );
           } else if (snapshot.hasData) {
+            List<DateTime> periodDates = snapshot.requireData.toList(growable: true);
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                makeCalendar(snapshot.requireData.toList(growable: true)),
-                makeStatsPage(snapshot.requireData.toList()),
+                _makeCalendar(periodDates),
+                _makeStatsPage(periodDates),
               ],
             );
           } else {
@@ -58,7 +59,7 @@ class CalendarState extends State<Calendar> {
         });
   }
 
-  Widget makeCalendar(List<DateTime> periods) {
+  Widget _makeCalendar(List<DateTime> periods) {
     return TableCalendar(
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,
@@ -91,7 +92,7 @@ class CalendarState extends State<Calendar> {
           }
           Map<DateTime, DateType> futurePeriods =
           widget.service.getPredictedPeriods(12, periods, DateTime.now());
-          setPeriodNotifications(futurePeriods);
+          _setPeriodNotifications(futurePeriods);
           // widget.notificationService.showScheduledNotification(
           //     id: testId,
           //      title: "Test notification",
@@ -108,7 +109,7 @@ class CalendarState extends State<Calendar> {
         defaultBuilder: (context, day, focusedDay) {
           for (DateTime d in periods) {
             if (isSameDay(day, d)) {
-              return markDay(day, Colors.red, Colors.white);
+              return _markDay(day, Colors.red, Colors.white);
             }
           }
           Map<DateTime, DateType> futurePeriods =
@@ -116,11 +117,11 @@ class CalendarState extends State<Calendar> {
 
           for (DateTime d in futurePeriods.keys) {
             if (isSameDay(day, d)) {
-              return markDay(day, Colors.amberAccent, Colors.black);
+              return _markDay(day, Colors.amberAccent, Colors.black);
             }
           }
           if (isSameDay(day, DateTime.now())) {
-            return markDay(day, Colors.white, Colors.black);
+            return _markDay(day, Colors.white, Colors.black);
           }
 
           return null;
@@ -129,7 +130,7 @@ class CalendarState extends State<Calendar> {
     );
   }
 
-  Container markDay(DateTime day, Color dayColor, Color numberColor) {
+  Container _markDay(DateTime day, Color dayColor, Color numberColor) {
     var borderColor = dayColor;
     if (isSameDay(day, DateTime.now())) {
       borderColor = Colors.blueAccent;
@@ -146,7 +147,7 @@ class CalendarState extends State<Calendar> {
     );
   }
 
-  Widget makeStatsPage(List<DateTime> periodDays) {
+  Widget _makeStatsPage(List<DateTime> periodDays) {
     List<Period> periods = widget.service.getSortedPeriods(periodDays);
     Stats stats = widget.service.getStats(periods);
     return Flexible(
@@ -167,24 +168,24 @@ class CalendarState extends State<Calendar> {
     ));
   }
 
-  void setPeriodNotifications(Map<DateTime, DateType> futurePeriods) {
+  void _setPeriodNotifications(Map<DateTime, DateType> futurePeriods) {
     if (futurePeriods.isNotEmpty) {
       DateTime nextPeriodStart = futurePeriods.entries
           .firstWhere(
               (element) => element.value == DateType.START_OF_NEXT_PERIOD)
           .key
           .add(const Duration(hours: 7));
-      setNewNextPeriodStartNotification(nextPeriodStart);
+      _setNewNextPeriodStartNotification(nextPeriodStart);
 
       List<DateTime> periodContinuations = futurePeriods.entries
           .where((element) => element.value == DateType.IN_CURRENT_PERIOD)
           .map((e) => e.key)
           .toList();
-      setNewPeriodEndCheckNotification(periodContinuations);
+      _setNewPeriodEndCheckNotification(periodContinuations);
     }
   }
 
-  void setNewNextPeriodStartNotification(DateTime nextPeriodStart) {
+  void _setNewNextPeriodStartNotification(DateTime nextPeriodStart) {
     widget.notificationService.clearOldPeriodStartNotifications();
     widget.notificationService.showScheduledNotification(
         id: periodStartId,
@@ -193,7 +194,7 @@ class CalendarState extends State<Calendar> {
         date: nextPeriodStart);
   }
 
-  void setNewPeriodEndCheckNotification(List<DateTime> dates) {
+  void _setNewPeriodEndCheckNotification(List<DateTime> dates) {
     widget.notificationService.clearOldPeriodEndCheckNotifications();
     for (int i = 0; i < dates.length; i++) {
       DateTime date = dates[i].add(const Duration(hours: 7));

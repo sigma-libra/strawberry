@@ -2,9 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:strawberry/period/model/day_type.dart';
 import 'package:strawberry/period/model/period.dart';
 import 'package:strawberry/period/model/stats.dart';
+import 'package:strawberry/utils/date_time_utils.dart';
 
 class PeriodService {
-
   List<Period> getSortedPeriods(List<DateTime> dates) {
     dates.sort();
     final List<Period> periods = List.empty(growable: true);
@@ -102,19 +102,15 @@ class PeriodService {
     for (int i = 0; i < periods.length - 1; i++) {
       Period lastPeriod = periods[i];
       Period nextPeriod = periods[i + 1];
-      int cycleLength = _getNumberOfDaysBetweenDates(
+      int cycleLength = DateTimeUtils.getNumberOfDatesBetween(
           lastPeriod.startDay, nextPeriod.startDay);
-      int previousPeriodLength =
-          _getNumberOfDaysBetweenDates(lastPeriod.startDay, lastPeriod.endDay);
+      int previousPeriodLength = DateTimeUtils.getNumberOfDatesBetween(
+          lastPeriod.startDay, lastPeriod.endDay);
       cycleLengths.add(cycleLength);
       periodLengths.add(previousPeriodLength);
     }
     return Stats(
         cycleLength: cycleLengths.average.round(),
         periodLength: periodLengths.average.round());
-  }
-
-  int _getNumberOfDaysBetweenDates(DateTime startDay, DateTime endDay) {
-    return endDay.difference(startDay).inDays.abs() + 1;
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart';
 
 const int testId = 0;
 const periodStartId = 100;
@@ -69,9 +71,12 @@ class LocalNotificationService {
       required String title,
       required String body,
       required DateTime date}) async {
-    if (date.isAfter(DateTime.now())) {
+    if (date.isAfter(DateTime.now().toUtc())) {
       final details = await _notificationDetails();
-      final tz.TZDateTime dateTime = tz.TZDateTime.from(date, tz.getLocation(DateTime.now().timeZoneName));
+      final String currentTimeZone =
+          await FlutterNativeTimezone.getLocalTimezone();
+      Location location = tz.getLocation(currentTimeZone);
+      final tz.TZDateTime dateTime = tz.TZDateTime.from(date, location);
       await _localNotificationService.zonedSchedule(
           id, title, body, dateTime, details,
           uiLocalNotificationDateInterpretation:
@@ -85,10 +90,11 @@ class LocalNotificationService {
   }
 
   Future<void> clearOldPeriodEndCheckNotifications() async {
-    List<PendingNotificationRequest> notifications = await _localNotificationService.pendingNotificationRequests();
-    for(PendingNotificationRequest notification in notifications) {
+    List<PendingNotificationRequest> notifications =
+        await _localNotificationService.pendingNotificationRequests();
+    for (PendingNotificationRequest notification in notifications) {
       int id = notification.id;
-      if(id >= periodEndCheckIdRange) {
+      if (id >= periodEndCheckIdRange) {
         await _localNotificationService.cancel(id);
       }
     }

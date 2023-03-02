@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:strawberry/utils/date_time_utils.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class Period {
   DateTime startDay;
@@ -7,7 +9,7 @@ class Period {
   Period({required this.startDay, required this.endDay});
 
   bool includeInPeriod(DateTime day) {
-    if (isInPeriod(day)) {
+    if (_isInPeriod(day)) {
       return true;
     }
     if (endDay.difference(day).inDays.abs() < 3) {
@@ -35,31 +37,16 @@ class Period {
     return 'Period {start date: $startDay, end date: $endDay}';
   }
 
-  bool _isSameDay(DateTime firstDay, DateTime secondDay) {
-    return firstDay.difference(secondDay).inDays.abs() == 0;
-  }
-
-  isInPeriod(DateTime day) {
-    return _isSameDay(startDay, day) ||
-        _isSameDay(endDay, day) ||
+  bool _isInPeriod(DateTime day) {
+    return isSameDay(startDay, day) ||
+        isSameDay(endDay, day) ||
         (startDay.isBefore(day) && endDay.isAfter(day));
   }
 
   ListTile asListTile() {
     return ListTile(
-      title: Text("${_dateString(startDay)} - ${_dateString(endDay)}"),
+      title: Text(
+          "${DateTimeUtils.formatPrettyDate(startDay)} - ${DateTimeUtils.formatPrettyDate(endDay)}"),
     );
-  }
-
-  String _dateString(DateTime dateTime) {
-    return "${_addLeadingZero(dateTime.day)}/${_addLeadingZero(dateTime.month)}/${_addLeadingZero(dateTime.year)}";
-  }
-
-  String _addLeadingZero(int number) {
-    if (number < 10) {
-      return "0$number";
-    } else {
-      return "$number";
-    }
   }
 }
