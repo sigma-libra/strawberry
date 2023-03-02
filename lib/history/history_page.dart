@@ -45,7 +45,7 @@ class HistoryPageState extends State<HistoryPage> {
         itemCount: periods.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: periods[index].asListTile(),
+            title: Card(child: periods[index].asListTile()),
           );
         },
     );
