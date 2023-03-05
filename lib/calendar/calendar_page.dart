@@ -182,7 +182,6 @@ class CalendarState extends State<Calendar> {
           .where((element) => element.value == DateType.IN_CURRENT_PERIOD)
           .map((e) => e.key)
           .toList();
-      print(periodContinuations);
       _setNewPeriodEndCheckNotification(periodContinuations);
     }
   }
