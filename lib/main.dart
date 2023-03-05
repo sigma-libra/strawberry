@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:strawberry/calendar/calendar_page.dart';
+import 'package:strawberry/history/alerts_page.dart';
 import 'package:strawberry/history/history_page.dart';
 import 'package:strawberry/notification/local_notifications_service.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
@@ -82,7 +83,7 @@ class StartPageState extends State<StartPage> {
                 ),
                 const PopupMenuItem<int>(
                   value: 1,
-                  child: Text("Settings"),
+                  child: Text("Alerts"),
                 ),
                 const PopupMenuItem<int>(
                   value: 2,
@@ -93,7 +94,7 @@ class StartPageState extends State<StartPage> {
               if (value == 0) {
                 _showHistory(context);
               } else if (value == 1) {
-                print("Settings menu is selected.");
+                _showAlerts(context);
               } else if (value == 2) {
                 _delete(context);
               }
@@ -147,6 +148,16 @@ class StartPageState extends State<StartPage> {
           builder: (context) => HistoryPage(
                 repository: widget.repository,
                 service: widget.service,
+              )),
+    );
+  }
+
+  void _showAlerts(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => AlertsPage(
+                notificationService: widget.notificationService,
               )),
     );
   }

@@ -92,9 +92,6 @@ class CalendarState extends State<Calendar> {
           } else {
             widget.repository.insertPeriod(PeriodDay.create(selectedDay));
           }
-          Map<DateTime, DateType> futurePeriods =
-          widget.service.getPredictedPeriods(12, periods, DateTime.now());
-          _setPeriodNotifications(futurePeriods);
           // widget.notificationService.showScheduledNotification(
           //     id: testId,
           //      title: "Test notification",
@@ -116,6 +113,8 @@ class CalendarState extends State<Calendar> {
           }
           Map<DateTime, DateType> futurePeriods =
               widget.service.getPredictedPeriods(12, periods, DateTime.now());
+
+          _setPeriodNotifications(futurePeriods);
 
           for (DateTime d in futurePeriods.keys) {
             if (isSameDay(day, d)) {
@@ -183,24 +182,25 @@ class CalendarState extends State<Calendar> {
           .where((element) => element.value == DateType.IN_CURRENT_PERIOD)
           .map((e) => e.key)
           .toList();
+      print(periodContinuations);
       _setNewPeriodEndCheckNotification(periodContinuations);
     }
   }
 
-  void _setNewNextPeriodStartNotification(DateTime nextPeriodStart) {
-    widget.notificationService.clearOldPeriodStartNotifications();
-    widget.notificationService.showScheduledNotification(
+  Future<void> _setNewNextPeriodStartNotification(DateTime nextPeriodStart) async {
+    await widget.notificationService.clearOldPeriodStartNotifications();
+    await widget.notificationService.showScheduledNotification(
         id: periodStartId,
         title: "Period start",
         body: "Your period is scheduled to start today",
         date: nextPeriodStart);
   }
 
-  void _setNewPeriodEndCheckNotification(List<DateTime> dates) {
-    widget.notificationService.clearOldPeriodEndCheckNotifications();
+  Future<void> _setNewPeriodEndCheckNotification(List<DateTime> dates) async {
+    await widget.notificationService.clearOldPeriodEndCheckNotifications();
     for (int i = 0; i < dates.length; i++) {
       DateTime date = dates[i].add(const Duration(hours: 7));
-      widget.notificationService.showScheduledNotification(
+      await widget.notificationService.showScheduledNotification(
           id: periodEndCheckIdRange + i,
           title: "Period ended?",
           body: "Do you still have your period today ($date)?",

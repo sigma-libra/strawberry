@@ -85,6 +85,12 @@ class LocalNotificationService {
     }
   }
 
+  Future<List<String>> getNotificationsList() async {
+    List<PendingNotificationRequest> requests = await _localNotificationService
+        .pendingNotificationRequests();
+    return requests.map((e) => "${e.id}: ${e.body!}").toList();
+  }
+
   Future<void> clearOldPeriodStartNotifications() async {
     await _localNotificationService.cancel(periodStartId);
   }
