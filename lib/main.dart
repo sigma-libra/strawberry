@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:material_color_generator/material_color_generator.dart';
 import 'package:strawberry/calendar/calendar_page.dart';
 import 'package:strawberry/history/history_page.dart';
 import 'package:strawberry/notification/local_notifications_service.dart';
-import 'package:strawberry/period/model/period.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
+import 'package:strawberry/utils/colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Strawberry',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: generateMaterialColor(color: CUSTOM_BLUE),
       ),
       home: StartPage(
         repository: repository,

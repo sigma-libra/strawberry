@@ -9,6 +9,8 @@ import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/period/model/stats.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../utils/colors.dart';
+
 class Calendar extends StatefulWidget {
   const Calendar(
       {super.key,
@@ -109,7 +111,7 @@ class CalendarState extends State<Calendar> {
         defaultBuilder: (context, day, focusedDay) {
           for (DateTime d in periods) {
             if (isSameDay(day, d)) {
-              return _markDay(day, Colors.red, Colors.white);
+              return _markDay(day, CUSTOM_RED, Colors.white);
             }
           }
           Map<DateTime, DateType> futurePeriods =
@@ -117,7 +119,7 @@ class CalendarState extends State<Calendar> {
 
           for (DateTime d in futurePeriods.keys) {
             if (isSameDay(day, d)) {
-              return _markDay(day, Colors.amberAccent, Colors.black);
+              return _markDay(day, CUSTOM_YELLOW, Colors.black);
             }
           }
           if (isSameDay(day, DateTime.now())) {
@@ -133,7 +135,7 @@ class CalendarState extends State<Calendar> {
   Container _markDay(DateTime day, Color dayColor, Color numberColor) {
     var borderColor = dayColor;
     if (isSameDay(day, DateTime.now())) {
-      borderColor = Colors.blueAccent;
+      borderColor = CUSTOM_BLUE;
     }
     return Container(
       decoration: BoxDecoration(
