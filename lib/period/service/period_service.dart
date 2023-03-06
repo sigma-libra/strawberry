@@ -1,10 +1,16 @@
 import 'package:collection/collection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strawberry/period/model/day_type.dart';
 import 'package:strawberry/period/model/period.dart';
+import 'package:strawberry/period/model/period_constants.dart';
 import 'package:strawberry/period/model/stats.dart';
 import 'package:strawberry/utils/date_time_utils.dart';
 
 class PeriodService {
+  SharedPreferences configs;
+
+  PeriodService(this.configs);
+
   List<Period> getSortedPeriods(List<DateTime> dates) {
     dates.sort();
     final List<Period> periods = List.empty(growable: true);
@@ -25,7 +31,7 @@ class PeriodService {
     if (pastPeriods.isEmpty) {
       return {};
     }
-    Stats stats = getStats(pastPeriods);
+    Stats stats = getStats();
 
     Duration cycleDuration = Duration(days: stats.cycleLength);
     Duration periodDuration = Duration(days: stats.periodLength);
@@ -87,30 +93,34 @@ class PeriodService {
     return futurePeriodDates;
   }
 
-  Stats getStats(List<Period> periods) {
-    if (periods.length < 2) {
-      return Stats.avgStats();
-    } else {
-      return _calculateStatsFromPeriods(periods);
-    }
+  Stats getStats() {
+    return Stats(
+        cycleLength:
+            configs.getInt(AVERAGE_CYCLE_KEY) ?? DEFAULT_AVERAGE_CYCLE_LENGTH,
+        periodLength: configs.getInt(AVERAGE_PERIOD_KEY) ??
+            DEFAULT_AVERAGE_PERIOD_LENGTH);
   }
 
-  Stats _calculateStatsFromPeriods(List<Period> periods) {
-    final List<int> cycleLengths = List.empty(growable: true);
-    final List<int> periodLengths = List.empty(growable: true);
+  void calculateStatsFromPeriods(List<DateTime> dates) {
+    List<Period> periods = getSortedPeriods(dates);
+    if (periods.length > 2) {
+      final List<int> cycleLengths = List.empty(growable: true);
+      final List<int> periodLengths = List.empty(growable: true);
 
-    for (int i = 0; i < periods.length - 1; i++) {
-      Period lastPeriod = periods[i];
-      Period nextPeriod = periods[i + 1];
-      int cycleLength = DateTimeUtils.getNumberOfDatesBetween(
-          lastPeriod.startDay, nextPeriod.startDay);
-      int previousPeriodLength = DateTimeUtils.getNumberOfDatesBetween(
-          lastPeriod.startDay, lastPeriod.endDay);
-      cycleLengths.add(cycleLength);
-      periodLengths.add(previousPeriodLength);
+      for (int i = 0; i < periods.length - 1; i++) {
+        Period lastPeriod = periods[i];
+        Period nextPeriod = periods[i + 1];
+        int cycleLength = DateTimeUtils.getNumberOfDatesBetween(
+            lastPeriod.startDay, nextPeriod.startDay);
+        int previousPeriodLength = DateTimeUtils.getNumberOfDatesBetween(
+            lastPeriod.startDay, lastPeriod.endDay);
+        cycleLengths.add(cycleLength);
+        periodLengths.add(previousPeriodLength);
+      }
+      int averageCycle = cycleLengths.average.round();
+      int averagePeriod = periodLengths.average.round();
+      configs.setInt(AVERAGE_CYCLE_KEY, averageCycle);
+      configs.setInt(AVERAGE_PERIOD_KEY, averagePeriod);
     }
-    return Stats(
-        cycleLength: cycleLengths.average.round(),
-        periodLength: periodLengths.average.round());
   }
 }

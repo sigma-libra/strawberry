@@ -51,11 +51,12 @@ class CalendarState extends State<Calendar> {
           } else if (snapshot.hasData) {
             List<DateTime> periodDates =
                 snapshot.requireData.toList(growable: true);
+            widget.service.calculateStatsFromPeriods(periodDates);
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _makeCalendar(periodDates),
-                _makeStatsPage(periodDates),
+                _makeStatsPage(),
               ],
             );
           } else {
@@ -152,9 +153,8 @@ class CalendarState extends State<Calendar> {
     );
   }
 
-  Widget _makeStatsPage(List<DateTime> periodDays) {
-    List<Period> periods = widget.service.getSortedPeriods(periodDays);
-    Stats stats = widget.service.getStats(periods);
+  Widget _makeStatsPage() {
+    Stats stats = widget.service.getStats();
     return Flexible(
         child: ListView(
       children: [
@@ -176,7 +176,8 @@ class CalendarState extends State<Calendar> {
   void _setPeriodNotifications(Map<DateTime, DateType> futurePeriods) {
     if (futurePeriods.isNotEmpty) {
       Map<DateTime, DateType> localDates = futurePeriods.map((key, value) =>
-          MapEntry(DateTime(key.year, key.month, key.day, NOTIFICATION_HOUR), value));
+          MapEntry(DateTime(key.year, key.month, key.day, NOTIFICATION_HOUR),
+              value));
       DateTime nextPeriodStart = localDates.entries
           .firstWhere(
               (element) => element.value == DateType.START_OF_NEXT_PERIOD)

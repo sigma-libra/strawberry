@@ -3,6 +3,7 @@
 
 
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strawberry/period/model/period_constants.dart';
 
 class Stats {
@@ -14,8 +15,8 @@ class Stats {
     required this.periodLength
   });
 
-  Stats.avgStats() {
-    cycleLength = averageCycleLength;
-    periodLength = averagePeriodLength;
+  Stats.avgStats(SharedPreferences configs) {
+    cycleLength = configs.getInt(AVERAGE_CYCLE_KEY) ?? DEFAULT_AVERAGE_CYCLE_LENGTH;
+    periodLength = configs.getInt(AVERAGE_PERIOD_KEY) ?? DEFAULT_AVERAGE_PERIOD_LENGTH;
   }
 }

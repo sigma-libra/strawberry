@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_color_generator/material_color_generator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strawberry/calendar/calendar_page.dart';
 import 'package:strawberry/history/alerts_page.dart';
 import 'package:strawberry/history/history_page.dart';
 import 'package:strawberry/notification/local_notifications_service.dart';
+import 'package:strawberry/period/model/period_constants.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/utils/colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  PeriodService periodService = PeriodService();
+  final configs = await SharedPreferences.getInstance();
+  PeriodService periodService = PeriodService(configs);
   PeriodRepository repository = PeriodRepository();
   await repository.initDatabase();
   final LocalNotificationService notificationService =
       LocalNotificationService();
   await notificationService.initialize();
   initializeDateFormatting().then((_) => runApp(MyApp(
-      repository: repository,
-      periodService: periodService,
-      notificationService: notificationService)));
+        repository: repository,
+        periodService: periodService,
+        notificationService: notificationService,
+      )));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp(
-      {super.key,
-      required this.repository,
-      required this.periodService,
-      required this.notificationService});
+  const MyApp({
+    super.key,
+    required this.repository,
+    required this.periodService,
+    required this.notificationService,
+  });
 
   final PeriodRepository repository;
   final PeriodService periodService;
