@@ -174,7 +174,7 @@ class SettingsPageState extends State<SettingsPage> {
           const Text("Use manual inputs"),
           Switch(
             value: useManualAverages,
-            activeColor: Colors.red,
+            activeColor: CUSTOM_RED,
             onChanged: (bool value) {
               // This is called when the user toggles the switch.
               setState(() {
