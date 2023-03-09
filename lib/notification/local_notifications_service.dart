@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:strawberry/utils/date_time_utils.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart';
@@ -79,6 +81,7 @@ class LocalNotificationService {
       final tz.TZDateTime dateTime = tz.TZDateTime.from(date, location);
       await _localNotificationService.zonedSchedule(
           id, title, body, dateTime, details,
+          payload: DateTimeUtils.formatPrettyDate(date),
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime,
           androidAllowWhileIdle: true);
@@ -86,9 +89,9 @@ class LocalNotificationService {
   }
 
   Future<List<String>> getNotificationsList() async {
-    List<PendingNotificationRequest> requests = await _localNotificationService
-        .pendingNotificationRequests();
-    return requests.map((e) => "${e.id}: ${e.body!}").toList();
+    List<PendingNotificationRequest> requests =
+        await _localNotificationService.pendingNotificationRequests();
+    return requests.map((e) => "${e.payload}: ${e.body!}").toList();
   }
 
   Future<void> clearOldPeriodStartNotifications() async {

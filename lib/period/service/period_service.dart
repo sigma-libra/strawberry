@@ -11,6 +11,14 @@ class PeriodService {
 
   PeriodService(this.configs);
 
+  bool setPeriodNotifications() {
+    return configs.getBool(NOTIFICATIONS_ON_KEY) ?? DEFAULT_NOTIFICATIONS_ON;
+  }
+
+  bool setCurrentPeriodNotifications() {
+    return configs.getBool(CURRENT_NOTIFICATIONS_ON_KEY) ?? DEFAULT_CURRENT_NOTIFICATIONS_ON;
+  }
+
   List<Period> getSortedPeriods(List<DateTime> dates) {
     dates.sort();
     final List<Period> periods = List.empty(growable: true);

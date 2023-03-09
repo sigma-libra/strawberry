@@ -4,3 +4,7 @@ const String AVERAGE_CYCLE_KEY = "average_cycle";
 const int DEFAULT_AVERAGE_CYCLE_LENGTH = 28;
 const String USE_MANUAL_AVERAGES_KEY = "use_manual_averages";
 const bool DEFAULT_MANUAL_AVERAGES = true;
+const String NOTIFICATIONS_ON_KEY = "notifications_on";
+const bool DEFAULT_NOTIFICATIONS_ON = true;
+const String CURRENT_NOTIFICATIONS_ON_KEY = "current_notifications_on";
+const bool DEFAULT_CURRENT_NOTIFICATIONS_ON = true;

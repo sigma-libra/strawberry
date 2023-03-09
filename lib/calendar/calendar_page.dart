@@ -1,8 +1,6 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:strawberry/notification/local_notifications_service.dart';
 import 'package:strawberry/period/model/day_type.dart';
-import 'package:strawberry/period/model/period.dart';
 import 'package:strawberry/period/model/period_day.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
@@ -174,6 +172,9 @@ class CalendarState extends State<Calendar> {
   }
 
   void _setPeriodNotifications(Map<DateTime, DateType> futurePeriods) {
+    bool setAnyNotifications = widget.service.setPeriodNotifications();
+    bool setCurrentPeriodNotifications =
+        widget.service.setCurrentPeriodNotifications();
     if (futurePeriods.isNotEmpty) {
       Map<DateTime, DateType> localDates = futurePeriods.map((key, value) =>
           MapEntry(DateTime(key.year, key.month, key.day, NOTIFICATION_HOUR),
@@ -182,35 +183,41 @@ class CalendarState extends State<Calendar> {
           .firstWhere(
               (element) => element.value == DateType.START_OF_NEXT_PERIOD)
           .key;
-      _setNewNextPeriodStartNotification(nextPeriodStart);
+      _setNewNextPeriodStartNotification(nextPeriodStart, setAnyNotifications);
 
       List<DateTime> periodContinuations = localDates.entries
           .where((element) => element.value == DateType.IN_CURRENT_PERIOD)
           .map((e) => e.key)
           .toList();
-      _setNewPeriodEndCheckNotification(periodContinuations);
+      _setNewPeriodEndCheckNotification(periodContinuations,
+          setAnyNotifications && setCurrentPeriodNotifications);
     }
   }
 
   Future<void> _setNewNextPeriodStartNotification(
-      DateTime nextPeriodStart) async {
+      DateTime nextPeriodStart, bool addNew) async {
     await widget.notificationService.clearOldPeriodStartNotifications();
-    await widget.notificationService.showScheduledNotification(
-        id: periodStartId,
-        title: "Period start",
-        body: "Your period is scheduled to start today",
-        date: nextPeriodStart);
+    if (addNew) {
+      await widget.notificationService.showScheduledNotification(
+          id: periodStartId,
+          title: "Period start",
+          body: "Your period is scheduled to start today",
+          date: nextPeriodStart);
+    }
   }
 
-  Future<void> _setNewPeriodEndCheckNotification(List<DateTime> dates) async {
+  Future<void> _setNewPeriodEndCheckNotification(
+      List<DateTime> dates, bool addNew) async {
     await widget.notificationService.clearOldPeriodEndCheckNotifications();
-    for (int i = 0; i < dates.length; i++) {
-      DateTime date = dates[i];
-      await widget.notificationService.showScheduledNotification(
-          id: periodEndCheckIdRange + i,
-          title: "Period ended?",
-          body: "Do you still have your period today ($date)?",
-          date: date);
+    if (addNew) {
+      for (int i = 0; i < dates.length; i++) {
+        DateTime date = dates[i];
+        await widget.notificationService.showScheduledNotification(
+            id: periodEndCheckIdRange + i,
+            title: "Mark your period",
+            body: "Do you still have your period today?",
+            date: date);
+      }
     }
   }
 }
