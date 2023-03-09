@@ -3,17 +3,17 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strawberry/calendar/calendar_page.dart';
-import 'package:strawberry/history/alerts_page.dart';
-import 'package:strawberry/history/history_page.dart';
+import 'package:strawberry/menu/alerts_page.dart';
+import 'package:strawberry/menu/history_page.dart';
+import 'package:strawberry/menu/settings_page.dart';
 import 'package:strawberry/notification/local_notifications_service.dart';
-import 'package:strawberry/period/model/period_constants.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/utils/colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final configs = await SharedPreferences.getInstance();
+  SharedPreferences configs = await SharedPreferences.getInstance();
   PeriodService periodService = PeriodService(configs);
   PeriodRepository repository = PeriodRepository();
   await repository.initDatabase();
@@ -24,6 +24,7 @@ void main() async {
         repository: repository,
         periodService: periodService,
         notificationService: notificationService,
+        configs: configs,
       )));
 }
 
@@ -33,11 +34,13 @@ class MyApp extends StatelessWidget {
     required this.repository,
     required this.periodService,
     required this.notificationService,
+    required this.configs,
   });
 
   final PeriodRepository repository;
   final PeriodService periodService;
   final LocalNotificationService notificationService;
+  final SharedPreferences configs;
 
   @override
   Widget build(BuildContext context) {
@@ -50,21 +53,25 @@ class MyApp extends StatelessWidget {
         repository: repository,
         service: periodService,
         notificationService: notificationService,
+        configs: configs,
       ),
     );
   }
 }
 
 class StartPage extends StatefulWidget {
-  const StartPage(
-      {super.key,
-      required this.repository,
-      required this.service,
-      required this.notificationService});
+  const StartPage({
+    super.key,
+    required this.repository,
+    required this.service,
+    required this.notificationService,
+    required this.configs,
+  });
 
   final PeriodRepository repository;
   final PeriodService service;
   final LocalNotificationService notificationService;
+  final SharedPreferences configs;
 
   @override
   StartPageState createState() => StartPageState();
@@ -92,6 +99,10 @@ class StartPageState extends State<StartPage> {
                 ),
                 const PopupMenuItem<int>(
                   value: 2,
+                  child: Text("Settings"),
+                ),
+                const PopupMenuItem<int>(
+                  value: 3,
                   child: Text("Delete All"),
                 ),
               ];
@@ -101,6 +112,8 @@ class StartPageState extends State<StartPage> {
               } else if (value == 1) {
                 _showAlerts(context);
               } else if (value == 2) {
+                _showSettings(context);
+              } else if (value == 3) {
                 _delete(context);
               }
             }),
@@ -165,5 +178,16 @@ class StartPageState extends State<StartPage> {
                 notificationService: widget.notificationService,
               )),
     );
+  }
+
+  void _showSettings(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SettingsPage(
+                notificationService: widget.notificationService,
+                configs: widget.configs,
+              )),
+    ).then((_) => setState(() {}));
   }
 }

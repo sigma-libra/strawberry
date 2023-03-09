@@ -93,17 +93,17 @@ class PeriodService {
     return futurePeriodDates;
   }
 
-  Stats getStats() {
-    return Stats(
-        cycleLength:
-            configs.getInt(AVERAGE_CYCLE_KEY) ?? DEFAULT_AVERAGE_CYCLE_LENGTH,
-        periodLength: configs.getInt(AVERAGE_PERIOD_KEY) ??
-            DEFAULT_AVERAGE_PERIOD_LENGTH);
-  }
+  Stats getStats() => Stats(
+      cycleLength:
+          configs.getInt(AVERAGE_CYCLE_KEY) ?? DEFAULT_AVERAGE_CYCLE_LENGTH,
+      periodLength:
+          configs.getInt(AVERAGE_PERIOD_KEY) ?? DEFAULT_AVERAGE_PERIOD_LENGTH);
 
   void calculateStatsFromPeriods(List<DateTime> dates) {
     List<Period> periods = getSortedPeriods(dates);
-    if (periods.length > 2) {
+    bool useManualStats =
+        configs.getBool(USE_MANUAL_AVERAGES_KEY) ?? DEFAULT_MANUAL_AVERAGES;
+    if (periods.length > 2 && !useManualStats) {
       final List<int> cycleLengths = List.empty(growable: true);
       final List<int> periodLengths = List.empty(growable: true);
 
