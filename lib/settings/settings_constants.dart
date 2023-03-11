@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 const String AVERAGE_PERIOD_KEY = "average_period";
 const int DEFAULT_AVERAGE_PERIOD_LENGTH = 7;
 const String AVERAGE_CYCLE_KEY = "average_cycle";

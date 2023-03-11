@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:strawberry/notification/local_notifications_service.dart';
-import 'package:strawberry/period/model/period_constants.dart';
+import 'package:strawberry/notification/notifications_service.dart';
+import 'package:strawberry/settings/settings_constants.dart';
+import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/colors.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage(
-      {super.key, required this.notificationService, required this.configs});
+      {super.key, required this.notificationService, required this.settings});
 
-  final LocalNotificationService notificationService;
-  final SharedPreferences configs;
+  final NotificationService notificationService;
+  final SettingsService settings;
 
   @override
   SettingsPageState createState() => SettingsPageState();
@@ -32,25 +32,14 @@ class SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _cycleController = TextEditingController(
-        text: widget.configs.getInt(AVERAGE_CYCLE_KEY).toString());
-    _periodController = TextEditingController(
-        text: widget.configs.getInt(AVERAGE_PERIOD_KEY).toString());
-    _useManualAverages = widget.configs.getBool(USE_MANUAL_AVERAGES_KEY) ??
-        DEFAULT_MANUAL_AVERAGES;
-    _notificationsOn = widget.configs.getBool(NOTIFICATIONS_ON_KEY) ??
-        DEFAULT_NOTIFICATIONS_ON;
-    _currentNotificationsOn =
-        widget.configs.getBool(CURRENT_NOTIFICATIONS_ON_KEY) ??
-            DEFAULT_CURRENT_NOTIFICATIONS_ON;
-
-    int notificationHour = widget.configs.getInt(NOTIFICATION_HOUR_KEY) ??
-        DEFAULT_NOTIFICATION_HOUR;
-    int notificationMinute = widget.configs.getInt(NOTIFICATION_MINUTE_KEY) ??
-        DEFAULT_NOTIFICATION_MINUTE;
-
-    _notificationTime =
-        TimeOfDay(hour: notificationHour, minute: notificationMinute);
+    _cycleController =
+        TextEditingController(text: widget.settings.getCycle().toString());
+    _periodController =
+        TextEditingController(text: widget.settings.getPeriod().toString());
+    _useManualAverages = widget.settings.getManualAveragesFlag();
+    _notificationsOn = widget.settings.getNotificationsFlag();
+    _currentNotificationsOn = widget.settings.getCurrentNotificationsFlag();
+    _notificationTime = widget.settings.getNotificationTime();
   }
 
   @override
@@ -71,9 +60,8 @@ class SettingsPageState extends State<SettingsPage> {
 
   Container _makeSettings() {
     return Container(
-        padding: const EdgeInsets.all(40.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        padding: const EdgeInsets.all(30.0),
+        child: ListView(
           children: <Widget>[
             _notificationSwitch(),
             _currentNotificationSwitch(),
@@ -84,13 +72,16 @@ class SettingsPageState extends State<SettingsPage> {
             _numberField(_periodController, "Period"),
             ElevatedButton(
               onPressed: () {
-                _setNotificationsFlag();
-                _setCurrentNotificationsFlag();
-                _setNotificationTime();
-                _setManualFlag();
+                widget.settings.setNotificationsFlag(_notificationsOn);
+                widget.settings
+                    .setCurrentNotificationsFlag(_currentNotificationsOn);
+                widget.settings.setNotificationTime(_notificationTime);
+                widget.settings.setManualAveragesFlag(_useManualAverages);
                 if (_useManualAverages) {
-                  _setPeriod(_periodController.value.text);
-                  _setCycle(_cycleController.value.text);
+                  widget.settings
+                      .setPeriod(int.parse(_periodController.value.text));
+                  widget.settings
+                      .setCycle(int.parse(_cycleController.value.text));
                 }
 
                 Navigator.pop(context);
@@ -101,7 +92,7 @@ class SettingsPageState extends State<SettingsPage> {
         ));
   }
 
-  Widget _numberField(TextEditingController controller, String label) {
+  Row _numberField(TextEditingController controller, String label) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -125,7 +116,7 @@ class SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _notificationSwitch() {
+  Row _notificationSwitch() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -144,7 +135,7 @@ class SettingsPageState extends State<SettingsPage> {
         ]);
   }
 
-  Widget _currentNotificationSwitch() {
+  Row _currentNotificationSwitch() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -162,7 +153,7 @@ class SettingsPageState extends State<SettingsPage> {
         ]);
   }
 
-  Widget _divider() {
+  Divider _divider() {
     return Divider(
       color: CUSTOM_BLUE,
       thickness: 2,
@@ -177,7 +168,7 @@ class SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Widget _manualSwitch() {
+  Row _manualSwitch() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -195,7 +186,7 @@ class SettingsPageState extends State<SettingsPage> {
         ]);
   }
 
-  Widget _timeField() {
+  Row _timeField() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -223,25 +214,5 @@ class SettingsPageState extends State<SettingsPage> {
         _notificationTime = picked;
       }
     });
-  }
-
-  void _setNotificationsFlag() =>
-      widget.configs.setBool(NOTIFICATIONS_ON_KEY, _notificationsOn);
-
-  void _setCurrentNotificationsFlag() => widget.configs
-      .setBool(CURRENT_NOTIFICATIONS_ON_KEY, _currentNotificationsOn);
-
-  void _setManualFlag() =>
-      widget.configs.setBool(USE_MANUAL_AVERAGES_KEY, _useManualAverages);
-
-  void _setPeriod(String value) =>
-      widget.configs.setInt(AVERAGE_PERIOD_KEY, int.parse(value));
-
-  void _setCycle(String value) =>
-      widget.configs.setInt(AVERAGE_CYCLE_KEY, int.parse(value));
-
-  void _setNotificationTime() {
-    widget.configs.setInt(NOTIFICATION_HOUR_KEY, _notificationTime.hour);
-    widget.configs.setInt(NOTIFICATION_MINUTE_KEY, _notificationTime.minute);
   }
 }

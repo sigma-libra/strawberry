@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:strawberry/notification/local_notifications_service.dart';
+import 'package:strawberry/notification/notifications_service.dart';
 
 class AlertsPage extends StatefulWidget {
   const AlertsPage({super.key, required this.notificationService});
 
-  final LocalNotificationService notificationService;
+  final NotificationService notificationService;
 
   @override
   AlertsPageState createState() => AlertsPageState();

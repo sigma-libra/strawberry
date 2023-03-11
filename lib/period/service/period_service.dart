@@ -1,22 +1,21 @@
 import 'package:collection/collection.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strawberry/period/model/day_type.dart';
 import 'package:strawberry/period/model/period.dart';
-import 'package:strawberry/period/model/period_constants.dart';
 import 'package:strawberry/period/model/stats.dart';
+import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/date_time_utils.dart';
 
 class PeriodService {
-  SharedPreferences configs;
+  final SettingsService _settings;
 
-  PeriodService(this.configs);
+  PeriodService(this._settings);
 
-  bool setPeriodNotifications() {
-    return configs.getBool(NOTIFICATIONS_ON_KEY) ?? DEFAULT_NOTIFICATIONS_ON;
+  bool getPeriodNotifications() {
+    return _settings.getNotificationsFlag();
   }
 
   bool setCurrentPeriodNotifications() {
-    return configs.getBool(CURRENT_NOTIFICATIONS_ON_KEY) ?? DEFAULT_CURRENT_NOTIFICATIONS_ON;
+    return _settings.getCurrentNotificationsFlag();
   }
 
   List<Period> getSortedPeriods(List<DateTime> dates) {
@@ -102,15 +101,12 @@ class PeriodService {
   }
 
   Stats getStats() => Stats(
-      cycleLength:
-          configs.getInt(AVERAGE_CYCLE_KEY) ?? DEFAULT_AVERAGE_CYCLE_LENGTH,
-      periodLength:
-          configs.getInt(AVERAGE_PERIOD_KEY) ?? DEFAULT_AVERAGE_PERIOD_LENGTH);
+      cycleLength: _settings.getCycle(), periodLength: _settings.getPeriod());
 
   void calculateStatsFromPeriods(List<DateTime> dates) {
     List<Period> periods = getSortedPeriods(dates);
-    bool useManualStats =
-        configs.getBool(USE_MANUAL_AVERAGES_KEY) ?? DEFAULT_MANUAL_AVERAGES;
+    bool useManualStats = _settings.getManualAveragesFlag();
+
     if (periods.length > 2 && !useManualStats) {
       final List<int> cycleLengths = List.empty(growable: true);
       final List<int> periodLengths = List.empty(growable: true);
@@ -127,8 +123,8 @@ class PeriodService {
       }
       int averageCycle = cycleLengths.average.round();
       int averagePeriod = periodLengths.average.round();
-      configs.setInt(AVERAGE_CYCLE_KEY, averageCycle);
-      configs.setInt(AVERAGE_PERIOD_KEY, averagePeriod);
+      _settings.setCycle(averageCycle);
+      _settings.setPeriod(averagePeriod);
     }
   }
 }

@@ -4,10 +4,10 @@ import 'package:strawberry/period/model/period_day.dart';
 import 'package:path/path.dart';
 
 class PeriodRepository {
-  late Database database;
+  late Database _database;
 
-  Future initDatabase() async {
-    database = await openDatabase(
+  Future init() async {
+    _database = await openDatabase(
       join(await getDatabasesPath(), 'period_database.db'),
       onCreate: (db, version) {
         // Run the CREATE TABLE statement on the database.
@@ -22,11 +22,11 @@ class PeriodRepository {
   }
 
   Future<void> truncate() async {
-    await database.delete(tableName);
+    await _database.delete(tableName);
   }
 
   Future<void> insertPeriod(PeriodDay period) async {
-    await database.insert(
+    await _database.insert(
       tableName,
       period.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -34,7 +34,7 @@ class PeriodRepository {
   }
 
   Future<List<DateTime>> getPeriodDates() async {
-    final List<Map<String, dynamic>> maps = await database.query(tableName);
+    final List<Map<String, dynamic>> maps = await _database.query(tableName);
 
     return List.generate(maps.length, (i) {
       return PeriodDay.fromMap(maps[i]).date;
@@ -42,7 +42,7 @@ class PeriodRepository {
   }
 
   Future<void> updatePeriod(PeriodDay period) async {
-    await database.update(
+    await _database.update(
       tableName,
       period.toMap(),
       where: '$idColumn = ?',
@@ -51,7 +51,7 @@ class PeriodRepository {
   }
 
   Future<void> deletePeriod(DateTime date) async {
-    await database.delete(
+    await _database.delete(
       tableName,
       where: '$dateColumn = ?',
       // Pass the period's id as a whereArg to prevent SQL injection.

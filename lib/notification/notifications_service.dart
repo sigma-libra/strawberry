@@ -1,20 +1,17 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:strawberry/notification/notification_id_constants.dart';
 import 'package:strawberry/utils/date_time_utils.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart';
 
-const int testId = 0;
-const periodStartId = 100;
-const periodEndCheckIdRange = 200;
-
-class LocalNotificationService {
-  LocalNotificationService();
+class NotificationService {
+  NotificationService();
 
   final _localNotificationService = FlutterLocalNotificationsPlugin();
 
-  Future<void> initialize() async {
+  Future<void> init() async {
     tz.initializeTimeZones();
     const AndroidInitializationSettings androidInitializationSettings =
         AndroidInitializationSettings('@drawable/moon_icon');
@@ -36,13 +33,9 @@ class LocalNotificationService {
   }
 
   void _onDidReceiveLocalNotification(
-      int id, String? title, String? body, String? payload) {
-    print("Id $id");
-  }
+      int id, String? title, String? body, String? payload) {}
 
-  void onSelectNotification(NotificationResponse details) {
-    print("$details");
-  }
+  void onSelectNotification(NotificationResponse details) {}
 
   Future<NotificationDetails> _notificationDetails() async {
     const AndroidNotificationDetails androidNotificationDetails =
@@ -94,7 +87,7 @@ class LocalNotificationService {
   }
 
   Future<void> clearOldPeriodStartNotifications() async {
-    await _localNotificationService.cancel(periodStartId);
+    await _localNotificationService.cancel(PERIOD_START_NOTIFICATION_ID);
   }
 
   Future<void> clearOldPeriodEndCheckNotifications() async {
@@ -102,7 +95,7 @@ class LocalNotificationService {
         await _localNotificationService.pendingNotificationRequests();
     for (PendingNotificationRequest notification in notifications) {
       int id = notification.id;
-      if (id >= periodEndCheckIdRange) {
+      if (id >= PERIOD_END_NOTIFICATION_ID_FLOOR) {
         await _localNotificationService.cancel(id);
       }
     }

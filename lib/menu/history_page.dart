@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:strawberry/period/model/period.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
+import 'package:strawberry/utils/colors.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage(
@@ -24,7 +25,10 @@ class HistoryPageState extends State<HistoryPage> {
           if (snapshot.hasError) {
             return Text(
               'There was an error :(',
-              style: Theme.of(context).textTheme.displayLarge,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .displayLarge,
             );
           } else if (snapshot.hasData) {
             return Scaffold(
@@ -40,14 +44,22 @@ class HistoryPageState extends State<HistoryPage> {
 
   ListView _makeHistoryList(List<DateTime> periodDays) {
     List<Period> periods =
-        widget.service.getSortedPeriods(periodDays).reversed.toList();
+    widget.service
+        .getSortedPeriods(periodDays)
+        .reversed
+        .toList();
     return ListView.builder(
-        itemCount: periods.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Card(child: periods[index].asListTile()),
-          );
-        },
+      itemCount: periods.length,
+      itemBuilder: (context, index) {
+        return Card(
+          shadowColor: CUSTOM_YELLOW,
+          elevation: 2,
+          child: ListTile(
+            title: Text(periods[index].prettyString()),
+            textColor: CUSTOM_BLUE,
+          ),
+        );
+      },
     );
   }
 }

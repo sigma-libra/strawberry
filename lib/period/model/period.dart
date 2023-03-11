@@ -43,10 +43,6 @@ class Period {
         (startDay.isBefore(day) && endDay.isAfter(day));
   }
 
-  ListTile asListTile() {
-    return ListTile(
-      title: Text(
-          "${DateTimeUtils.formatPrettyDate(startDay)} - ${DateTimeUtils.formatPrettyDate(endDay)}"),
-    );
-  }
+  String prettyString() =>
+      "${DateTimeUtils.formatPrettyDate(startDay)} - ${DateTimeUtils.formatPrettyDate(endDay)}";
 }

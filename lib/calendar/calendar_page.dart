@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:strawberry/notification/local_notifications_service.dart';
+import 'package:strawberry/notification/notifications_service.dart';
+import 'package:strawberry/notification/notification_id_constants.dart';
 import 'package:strawberry/period/model/day_type.dart';
-import 'package:strawberry/period/model/period_constants.dart';
 import 'package:strawberry/period/model/period_day.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/period/model/stats.dart';
+import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/colors.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -16,13 +16,13 @@ class Calendar extends StatefulWidget {
     required this.repository,
     required this.service,
     required this.notificationService,
-    required this.configs,
+    required this.settings,
   });
 
   final PeriodRepository repository;
   final PeriodService service;
-  final LocalNotificationService notificationService;
-  final SharedPreferences configs;
+  final NotificationService notificationService;
+  final SettingsService settings;
 
   @override
   CalendarState createState() => CalendarState();
@@ -46,16 +46,20 @@ class CalendarState extends State<Calendar> {
           if (snapshot.hasError) {
             return Text(
               'There was an error :(',
-              style: Theme.of(context).textTheme.displayLarge,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .displayLarge,
             );
           } else if (snapshot.hasData) {
             List<DateTime> periodDates =
-                snapshot.requireData.toList(growable: true);
+            snapshot.requireData.toList(growable: true);
             widget.service.calculateStatsFromPeriods(periodDates);
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _makeCalendar(periodDates),
+                _divider(),
                 _makeStatsPage(),
               ],
             );
@@ -65,7 +69,7 @@ class CalendarState extends State<Calendar> {
         });
   }
 
-  Widget _makeCalendar(List<DateTime> periods) {
+  TableCalendar _makeCalendar(List<DateTime> periods) {
     return TableCalendar(
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,
@@ -117,7 +121,7 @@ class CalendarState extends State<Calendar> {
             }
           }
           Map<DateTime, DateType> futurePeriods =
-              widget.service.getPredictedPeriods(12, periods, DateTime.now());
+          widget.service.getPredictedPeriods(12, periods, DateTime.now());
 
           _setPeriodNotifications(futurePeriods);
 
@@ -153,33 +157,43 @@ class CalendarState extends State<Calendar> {
     );
   }
 
-  Widget _makeStatsPage() {
+  Flexible _makeStatsPage() {
     Stats stats = widget.service.getStats();
     return Flexible(
         child: ListView(
-      children: [
-        const ListTile(
-          title: Text("Stats"),
-        ),
-        ListTile(
-          leading: const Text("Cycle Length"),
-          trailing: Text("${stats.cycleLength}"),
-        ),
-        ListTile(
-          leading: const Text("Period Length"),
-          trailing: Text("${stats.periodLength}"),
-        )
-      ],
-    ));
+          children: [
+            ListTile(
+              title: Text(
+                "Stats",
+                style: TextStyle(
+                    color: CUSTOM_BLUE,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18),
+              ),
+            ),
+            _makeStatTile("Cycle length", stats.cycleLength),
+            _makeStatTile("Period length", stats.periodLength)
+          ],
+        ));
+  }
+
+  ListTile _makeStatTile(String title, int value) {
+    return ListTile(
+      leading: Text(
+        title,
+        style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
+      ),
+      trailing: Text("$value"),
+    );
   }
 
   void _setPeriodNotifications(Map<DateTime, DateType> futurePeriods) {
-    bool setAnyNotifications = widget.service.setPeriodNotifications();
+    bool setAnyNotifications = widget.service.getPeriodNotifications();
     bool setCurrentPeriodNotifications =
-        widget.service.setCurrentPeriodNotifications();
+    widget.service.setCurrentPeriodNotifications();
     if (futurePeriods.isNotEmpty) {
       Map<DateTime, DateType> localDates = futurePeriods.map(
-          (key, value) => MapEntry(_parseNotificationDateTime(key), value));
+              (key, value) => MapEntry(_parseNotificationDateTime(key), value));
       DateTime nextPeriodStart = localDates.entries
           .firstWhere(
               (element) => element.value == DateType.START_OF_NEXT_PERIOD)
@@ -196,37 +210,41 @@ class CalendarState extends State<Calendar> {
   }
 
   DateTime _parseNotificationDateTime(DateTime date) {
-    int hour = widget.configs.getInt(NOTIFICATION_HOUR_KEY) ??
-        DEFAULT_NOTIFICATION_HOUR;
-    int minute = widget.configs.getInt(NOTIFICATION_MINUTE_KEY) ??
-        DEFAULT_NOTIFICATION_MINUTE;
-    return DateTime(date.year, date.month, date.day, hour, minute);
+    TimeOfDay time = widget.settings.getNotificationTime();
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
-  Future<void> _setNewNextPeriodStartNotification(
-      DateTime nextPeriodStart, bool addNew) async {
+  Future<void> _setNewNextPeriodStartNotification(DateTime nextPeriodStart,
+      bool addNew) async {
     await widget.notificationService.clearOldPeriodStartNotifications();
     if (addNew) {
       await widget.notificationService.showScheduledNotification(
-          id: periodStartId,
+          id: PERIOD_START_NOTIFICATION_ID,
           title: "Period start",
           body: "Your period is scheduled to start today",
           date: nextPeriodStart);
     }
   }
 
-  Future<void> _setNewPeriodEndCheckNotification(
-      List<DateTime> dates, bool addNew) async {
+  Future<void> _setNewPeriodEndCheckNotification(List<DateTime> dates,
+      bool addNew) async {
     await widget.notificationService.clearOldPeriodEndCheckNotifications();
     if (addNew) {
       for (int i = 0; i < dates.length; i++) {
         DateTime date = dates[i];
         await widget.notificationService.showScheduledNotification(
-            id: periodEndCheckIdRange + i,
+            id: PERIOD_END_NOTIFICATION_ID_FLOOR + i,
             title: "Mark your period",
             body: "Do you still have your period today?",
             date: date);
       }
     }
+  }
+
+  Divider _divider() {
+    return Divider(
+      color: CUSTOM_YELLOW,
+      thickness: 2,
+    );
   }
 }
