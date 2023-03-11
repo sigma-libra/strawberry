@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:strawberry/notification/local_notifications_service.dart';
-import 'package:strawberry/period/model/period.dart';
-import 'package:strawberry/period/repository/period_repository.dart';
-import 'package:strawberry/period/service/period_service.dart';
 
 class AlertsPage extends StatefulWidget {
   const AlertsPage({super.key, required this.notificationService});

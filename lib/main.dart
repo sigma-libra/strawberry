@@ -123,6 +123,7 @@ class StartPageState extends State<StartPage> {
           repository: widget.repository,
           service: widget.service,
           notificationService: widget.notificationService,
+          configs: widget.configs,
         ));
   }
 

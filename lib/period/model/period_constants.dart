@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 const String AVERAGE_PERIOD_KEY = "average_period";
 const int DEFAULT_AVERAGE_PERIOD_LENGTH = 7;
 const String AVERAGE_CYCLE_KEY = "average_cycle";
@@ -8,3 +10,7 @@ const String NOTIFICATIONS_ON_KEY = "notifications_on";
 const bool DEFAULT_NOTIFICATIONS_ON = true;
 const String CURRENT_NOTIFICATIONS_ON_KEY = "current_notifications_on";
 const bool DEFAULT_CURRENT_NOTIFICATIONS_ON = true;
+const String NOTIFICATION_HOUR_KEY = "notification_time";
+const String NOTIFICATION_MINUTE_KEY = "notification_minute";
+const int DEFAULT_NOTIFICATION_HOUR = 7;
+const int DEFAULT_NOTIFICATION_MINUTE = 0;

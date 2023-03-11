@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strawberry/notification/local_notifications_service.dart';
 import 'package:strawberry/period/model/day_type.dart';
+import 'package:strawberry/period/model/period_constants.dart';
 import 'package:strawberry/period/model/period_day.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/period/model/stats.dart';
+import 'package:strawberry/utils/colors.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../utils/colors.dart';
-
 class Calendar extends StatefulWidget {
-  const Calendar(
-      {super.key,
-      required this.repository,
-      required this.service,
-      required this.notificationService});
+  const Calendar({
+    super.key,
+    required this.repository,
+    required this.service,
+    required this.notificationService,
+    required this.configs,
+  });
 
   final PeriodRepository repository;
   final PeriodService service;
   final LocalNotificationService notificationService;
+  final SharedPreferences configs;
 
   @override
   CalendarState createState() => CalendarState();
 }
 
 class CalendarState extends State<Calendar> {
-  DateTime _focusedDay = DateTime.now().add(const Duration(days: 4));
+  DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-
-  static const int NOTIFICATION_HOUR = 7;
 
   @override
   void initState() {
@@ -176,9 +178,8 @@ class CalendarState extends State<Calendar> {
     bool setCurrentPeriodNotifications =
         widget.service.setCurrentPeriodNotifications();
     if (futurePeriods.isNotEmpty) {
-      Map<DateTime, DateType> localDates = futurePeriods.map((key, value) =>
-          MapEntry(DateTime(key.year, key.month, key.day, NOTIFICATION_HOUR),
-              value));
+      Map<DateTime, DateType> localDates = futurePeriods.map(
+          (key, value) => MapEntry(_parseNotificationDateTime(key), value));
       DateTime nextPeriodStart = localDates.entries
           .firstWhere(
               (element) => element.value == DateType.START_OF_NEXT_PERIOD)
@@ -192,6 +193,14 @@ class CalendarState extends State<Calendar> {
       _setNewPeriodEndCheckNotification(periodContinuations,
           setAnyNotifications && setCurrentPeriodNotifications);
     }
+  }
+
+  DateTime _parseNotificationDateTime(DateTime date) {
+    int hour = widget.configs.getInt(NOTIFICATION_HOUR_KEY) ??
+        DEFAULT_NOTIFICATION_HOUR;
+    int minute = widget.configs.getInt(NOTIFICATION_MINUTE_KEY) ??
+        DEFAULT_NOTIFICATION_MINUTE;
+    return DateTime(date.year, date.month, date.day, hour, minute);
   }
 
   Future<void> _setNewNextPeriodStartNotification(

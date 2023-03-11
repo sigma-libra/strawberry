@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strawberry/notification/local_notifications_service.dart';
-import 'package:strawberry/period/model/period.dart';
 import 'package:strawberry/period/model/period_constants.dart';
-import 'package:strawberry/period/repository/period_repository.dart';
-import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/utils/colors.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -23,11 +20,14 @@ class SettingsPageState extends State<SettingsPage> {
   TextEditingController _cycleController = TextEditingController();
   TextEditingController _periodController = TextEditingController();
 
-  bool useManualAverages = DEFAULT_MANUAL_AVERAGES;
+  bool _useManualAverages = DEFAULT_MANUAL_AVERAGES;
 
-  bool notificationsOn = DEFAULT_NOTIFICATIONS_ON;
+  bool _notificationsOn = DEFAULT_NOTIFICATIONS_ON;
 
-  bool currentNotificationsOn = DEFAULT_CURRENT_NOTIFICATIONS_ON;
+  bool _currentNotificationsOn = DEFAULT_CURRENT_NOTIFICATIONS_ON;
+
+  TimeOfDay _notificationTime = const TimeOfDay(
+      hour: DEFAULT_NOTIFICATION_HOUR, minute: DEFAULT_NOTIFICATION_MINUTE);
 
   @override
   void initState() {
@@ -36,13 +36,21 @@ class SettingsPageState extends State<SettingsPage> {
         text: widget.configs.getInt(AVERAGE_CYCLE_KEY).toString());
     _periodController = TextEditingController(
         text: widget.configs.getInt(AVERAGE_PERIOD_KEY).toString());
-    useManualAverages = widget.configs.getBool(USE_MANUAL_AVERAGES_KEY) ??
+    _useManualAverages = widget.configs.getBool(USE_MANUAL_AVERAGES_KEY) ??
         DEFAULT_MANUAL_AVERAGES;
-    notificationsOn = widget.configs.getBool(NOTIFICATIONS_ON_KEY) ??
+    _notificationsOn = widget.configs.getBool(NOTIFICATIONS_ON_KEY) ??
         DEFAULT_NOTIFICATIONS_ON;
-    currentNotificationsOn =
+    _currentNotificationsOn =
         widget.configs.getBool(CURRENT_NOTIFICATIONS_ON_KEY) ??
             DEFAULT_CURRENT_NOTIFICATIONS_ON;
+
+    int notificationHour = widget.configs.getInt(NOTIFICATION_HOUR_KEY) ??
+        DEFAULT_NOTIFICATION_HOUR;
+    int notificationMinute = widget.configs.getInt(NOTIFICATION_MINUTE_KEY) ??
+        DEFAULT_NOTIFICATION_MINUTE;
+
+    _notificationTime =
+        TimeOfDay(hour: notificationHour, minute: notificationMinute);
   }
 
   @override
@@ -69,6 +77,7 @@ class SettingsPageState extends State<SettingsPage> {
           children: <Widget>[
             _notificationSwitch(),
             _currentNotificationSwitch(),
+            _timeField(),
             _divider(),
             _manualSwitch(),
             _numberField(_cycleController, "Cycle"),
@@ -77,12 +86,13 @@ class SettingsPageState extends State<SettingsPage> {
               onPressed: () {
                 _setNotificationsFlag();
                 _setCurrentNotificationsFlag();
+                _setNotificationTime();
                 _setManualFlag();
-                if (useManualAverages) {
+                if (_useManualAverages) {
                   _setPeriod(_periodController.value.text);
                   _setCycle(_cycleController.value.text);
                 }
-                
+
                 Navigator.pop(context);
               },
               child: const Text('Save'),
@@ -99,7 +109,7 @@ class SettingsPageState extends State<SettingsPage> {
         SizedBox(
             width: 40,
             child: TextField(
-              enabled: useManualAverages,
+              enabled: _useManualAverages,
               style: TextStyle(color: _enabledTextColor()),
               cursorColor: _enabledTextColor(),
               controller: controller,
@@ -121,13 +131,13 @@ class SettingsPageState extends State<SettingsPage> {
         children: <Widget>[
           const Text("All notifications"),
           Switch(
-            value: notificationsOn,
+            value: _notificationsOn,
             activeColor: CUSTOM_YELLOW,
             onChanged: (bool value) {
               // This is called when the user toggles the switch.
               setState(() {
-                notificationsOn = value;
-                currentNotificationsOn = currentNotificationsOn && value;
+                _notificationsOn = value;
+                _currentNotificationsOn = _currentNotificationsOn && value;
               });
             },
           ),
@@ -140,12 +150,12 @@ class SettingsPageState extends State<SettingsPage> {
         children: <Widget>[
           const Text("Current period notification"),
           Switch(
-            value: notificationsOn && currentNotificationsOn,
+            value: _notificationsOn && _currentNotificationsOn,
             activeColor: CUSTOM_YELLOW,
             onChanged: (bool value) {
               // This is called when the user toggles the switch.
               setState(() {
-                currentNotificationsOn = value;
+                _currentNotificationsOn = value;
               });
             },
           ),
@@ -153,14 +163,14 @@ class SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _divider() {
-    return const Divider(
-      color: Colors.black,
+    return Divider(
+      color: CUSTOM_BLUE,
       thickness: 2,
     );
   }
 
   Color _enabledTextColor() {
-    if (useManualAverages) {
+    if (_useManualAverages) {
       return Colors.black;
     } else {
       return Colors.grey;
@@ -173,30 +183,65 @@ class SettingsPageState extends State<SettingsPage> {
         children: <Widget>[
           const Text("Use manual inputs"),
           Switch(
-            value: useManualAverages,
+            value: _useManualAverages,
             activeColor: CUSTOM_RED,
             onChanged: (bool value) {
               // This is called when the user toggles the switch.
               setState(() {
-                useManualAverages = value;
+                _useManualAverages = value;
               });
             },
           ),
         ]);
   }
 
-  void _setNotificationsFlag() =>
-      widget.configs.setBool(NOTIFICATIONS_ON_KEY, notificationsOn);
+  Widget _timeField() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text("Notification time"),
+        SizedBox(
+            width: 80,
+            child: ElevatedButton(
+              onPressed: () {
+                return _selectTime(context);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: CUSTOM_YELLOW),
+              child: Text(_notificationTime.format(context)),
+            ))
+      ],
+    );
+  }
 
-  void _setCurrentNotificationsFlag() =>
-      widget.configs.setBool(CURRENT_NOTIFICATIONS_ON_KEY, currentNotificationsOn);
+  void _selectTime(BuildContext context) async {
+    TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _notificationTime,
+    );
+    setState(() {
+      if (picked != null) {
+        _notificationTime = picked;
+      }
+    });
+  }
+
+  void _setNotificationsFlag() =>
+      widget.configs.setBool(NOTIFICATIONS_ON_KEY, _notificationsOn);
+
+  void _setCurrentNotificationsFlag() => widget.configs
+      .setBool(CURRENT_NOTIFICATIONS_ON_KEY, _currentNotificationsOn);
 
   void _setManualFlag() =>
-      widget.configs.setBool(USE_MANUAL_AVERAGES_KEY, useManualAverages);
+      widget.configs.setBool(USE_MANUAL_AVERAGES_KEY, _useManualAverages);
 
   void _setPeriod(String value) =>
       widget.configs.setInt(AVERAGE_PERIOD_KEY, int.parse(value));
 
   void _setCycle(String value) =>
       widget.configs.setInt(AVERAGE_CYCLE_KEY, int.parse(value));
+
+  void _setNotificationTime() {
+    widget.configs.setInt(NOTIFICATION_HOUR_KEY, _notificationTime.hour);
+    widget.configs.setInt(NOTIFICATION_MINUTE_KEY, _notificationTime.minute);
+  }
 }
