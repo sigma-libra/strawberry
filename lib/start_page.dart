@@ -43,10 +43,10 @@ class StartPageState extends State<StartPage> {
                   value: 0,
                   child: Text("History"),
                 ),
-                const PopupMenuItem<int>(
-                  value: 1,
-                  child: Text("Alerts"),
-                ),
+                // const PopupMenuItem<int>(
+                //   value: 1,
+                //   child: Text("Alerts"),
+                // ),
                 const PopupMenuItem<int>(
                   value: 2,
                   child: Text("Settings"),
@@ -59,8 +59,8 @@ class StartPageState extends State<StartPage> {
             }, onSelected: (value) {
               if (value == 0) {
                 _showHistory(context);
-              } else if (value == 1) {
-                _showAlerts(context);
+              // } else if (value == 1) {
+              //   _showAlerts(context);
               } else if (value == 2) {
                 _showSettings(context);
               } else if (value == 3) {
