@@ -1,0 +1,5 @@
+enum SexType {
+  NONE,
+  PROTECTED,
+  UNPROTECTED
+}

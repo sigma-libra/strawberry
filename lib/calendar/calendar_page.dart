@@ -93,6 +93,9 @@ class CalendarState extends State<Calendar> {
         // the time-part of compared DateTime objects.
         return isSameDay(_selectedDay, day);
       },
+      onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
+
+      },
       onDayLongPressed: (DateTime selectedDay, DateTime focusedDay) {
         setState(() {
           if (periods.contains(selectedDay)) {
@@ -155,6 +158,26 @@ class CalendarState extends State<Calendar> {
         ),
       ),
     );
+  }
+
+  Flexible _makeDailyInfoPage() {
+    Stats stats = widget.service.getStats();
+    return Flexible(
+        child: ListView(
+          children: [
+            ListTile(
+              title: Text(
+                "Stats",
+                style: TextStyle(
+                    color: CUSTOM_BLUE,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18),
+              ),
+            ),
+            _makeStatTile("Cycle length", stats.cycleLength),
+            _makeStatTile("Period length", stats.periodLength)
+          ],
+        ));
   }
 
   Flexible _makeStatsPage() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:strawberry/info/repository/info_repository.dart';
 import 'package:strawberry/notification/notifications_service.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
@@ -14,13 +15,16 @@ void main() async {
   SettingsService settings = SettingsService();
   await settings.init();
   PeriodService periodService = PeriodService(settings);
-  PeriodRepository repository = PeriodRepository();
-  await repository.init();
+  PeriodRepository periodRepository = PeriodRepository();
+  await periodRepository.init();
+  InfoRepository infoRepository = InfoRepository();
+  await infoRepository.init();
   final NotificationService notificationService = NotificationService();
   await notificationService.init();
   initializeDateFormatting().then((_) => runApp(MyApp(
-        repository: repository,
+        periodRepository: periodRepository,
         periodService: periodService,
+        infoRepository: infoRepository,
         notificationService: notificationService,
         settings: settings,
       )));
@@ -29,14 +33,16 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({
     super.key,
-    required this.repository,
+    required this.periodRepository,
     required this.periodService,
+    required this.infoRepository,
     required this.notificationService,
     required this.settings,
   });
 
-  final PeriodRepository repository;
+  final PeriodRepository periodRepository;
   final PeriodService periodService;
+  final InfoRepository infoRepository;
   final NotificationService notificationService;
   final SettingsService settings;
 
@@ -48,8 +54,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: generateMaterialColor(color: CUSTOM_BLUE),
       ),
       home: StartPage(
-        repository: repository,
-        service: periodService,
+        periodRepository: periodRepository,
+        periodService: periodService,
+        infoRepository: infoRepository,
         notificationService: notificationService,
         settings: settings,
       ),

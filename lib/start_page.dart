@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strawberry/calendar/calendar_page.dart';
+import 'package:strawberry/info/repository/info_repository.dart';
 import 'package:strawberry/menu/alerts_page.dart';
 import 'package:strawberry/menu/history_page.dart';
 import 'package:strawberry/menu/settings_page.dart';
@@ -12,14 +13,16 @@ import 'notification/notifications_service.dart';
 class StartPage extends StatefulWidget {
   const StartPage({
     super.key,
-    required this.repository,
-    required this.service,
+    required this.periodRepository,
+    required this.periodService,
+    required this.infoRepository,
     required this.notificationService,
     required this.settings,
   });
 
-  final PeriodRepository repository;
-  final PeriodService service;
+  final PeriodRepository periodRepository;
+  final PeriodService periodService;
+  final InfoRepository infoRepository;
   final NotificationService notificationService;
   final SettingsService settings;
 
@@ -70,8 +73,8 @@ class StartPageState extends State<StartPage> {
           ],
         ),
         body: Calendar(
-          repository: widget.repository,
-          service: widget.service,
+          repository: widget.periodRepository,
+          service: widget.periodService,
           notificationService: widget.notificationService,
           settings: widget.settings,
         ));
@@ -91,7 +94,8 @@ class StartPageState extends State<StartPage> {
                   onPressed: () {
                     // Remove the box
                     setState(() {
-                      widget.repository.truncate();
+                      widget.periodRepository.truncate();
+                      widget.infoRepository.truncate();
                       widget.notificationService.clearAll();
                     });
 
@@ -115,8 +119,8 @@ class StartPageState extends State<StartPage> {
       context,
       MaterialPageRoute(
           builder: (context) => HistoryPage(
-                repository: widget.repository,
-                service: widget.service,
+                repository: widget.periodRepository,
+                service: widget.periodService,
               )),
     );
   }
