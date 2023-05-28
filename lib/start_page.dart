@@ -73,7 +73,8 @@ class StartPageState extends State<StartPage> {
           ],
         ),
         body: Calendar(
-          repository: widget.periodRepository,
+          periodRepository: widget.periodRepository,
+          infoRepository: widget.infoRepository,
           service: widget.periodService,
           notificationService: widget.notificationService,
           settings: widget.settings,

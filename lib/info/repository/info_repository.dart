@@ -8,16 +8,16 @@ class InfoRepository {
 
   Future init() async {
     _database = await openDatabase(
-      join(await getDatabasesPath(), 'period_database.db'),
+      join(await getDatabasesPath(), 'info_database.db'),
       onCreate: (db, version) {
         // Run the CREATE TABLE statement on the database.
         return db.execute(
           'CREATE TABLE $tableName($idColumn INTEGER PRIMARY KEY, '
-              '$dateColumn INTEGER, '
-              '$sexColumn STRING, '
-              '$birthControlColumn BOOLEAN, '
-              '$temperatureColumn FLOAT,'
-              '$notesColumn STRING )',
+          '$dateColumn INTEGER, '
+          '$sexColumn STRING, '
+          '$birthControlColumn BOOLEAN, '
+          '$temperatureColumn FLOAT,'
+          '$notesColumn STRING )',
         );
       },
       // Set the version. This executes the onCreate function and provides a
@@ -38,12 +38,18 @@ class InfoRepository {
     );
   }
 
-  Future<List<DailyInfo>> getDailyInfo(DateTime date) async {
-    final List<Map<String, dynamic>> maps = await _database.query(tableName, where: "$dateColumn = ?", whereArgs: [date.millisecondsSinceEpoch]);
+  Future<DailyInfo> getDailyInfo(DateTime date) async {
+    final List<Map<String, dynamic>> maps = await _database.query(tableName,
+        where: "$dateColumn = ?",
+        whereArgs: [date.millisecondsSinceEpoch],
+        limit: 1,
+        offset: 0);
 
-    return List.generate(maps.length, (i) {
-      return DailyInfo.fromMap(maps[i]);
-    });
+    if (maps.isNotEmpty) {
+      return DailyInfo.fromMap(maps.first);
+    } else {
+      return DailyInfo.create(date);
+    }
   }
 
   Future<void> updateDailyInfo(DailyInfo info) async {

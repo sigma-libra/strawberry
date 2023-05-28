@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:strawberry/calendar/daily_info_form.dart';
+import 'package:strawberry/info/model/daily_info.dart';
+import 'package:strawberry/info/repository/info_repository.dart';
 import 'package:strawberry/notification/notifications_service.dart';
 import 'package:strawberry/notification/notification_id_constants.dart';
 import 'package:strawberry/period/model/day_type.dart';
@@ -13,13 +16,15 @@ import 'package:table_calendar/table_calendar.dart';
 class Calendar extends StatefulWidget {
   const Calendar({
     super.key,
-    required this.repository,
+    required this.periodRepository,
+    required this.infoRepository,
     required this.service,
     required this.notificationService,
     required this.settings,
   });
 
-  final PeriodRepository repository;
+  final PeriodRepository periodRepository;
+  final InfoRepository infoRepository;
   final PeriodService service;
   final NotificationService notificationService;
   final SettingsService settings;
@@ -40,7 +45,7 @@ class CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: widget.repository.getPeriodDates(),
+        future: widget.periodRepository.getPeriodDates(),
         builder:
             (BuildContext context, AsyncSnapshot<List<DateTime>> snapshot) {
           if (snapshot.hasError) {
@@ -94,14 +99,14 @@ class CalendarState extends State<Calendar> {
         return isSameDay(_selectedDay, day);
       },
       onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
-
+        _editDailyInfo(selectedDay);
       },
       onDayLongPressed: (DateTime selectedDay, DateTime focusedDay) {
         setState(() {
           if (periods.contains(selectedDay)) {
-            widget.repository.deletePeriod(selectedDay);
+            widget.periodRepository.deletePeriod(selectedDay);
           } else {
-            widget.repository.insertPeriod(PeriodDay.create(selectedDay));
+            widget.periodRepository.insertPeriod(PeriodDay.create(selectedDay));
           }
           // DateTime date = DateTime.now().add(const Duration(seconds: 20));
           // widget.notificationService.showScheduledNotification(
@@ -160,22 +165,24 @@ class CalendarState extends State<Calendar> {
     );
   }
 
-  Flexible _makeDailyInfoPage() {
-    Stats stats = widget.service.getStats();
+  Flexible _makeDailyInfoPage(DateTime day) async {
+    DailyInfo info = await widget.infoRepository.getDailyInfo(day);
     return Flexible(
         child: ListView(
           children: [
             ListTile(
               title: Text(
-                "Stats",
+                "Daily Information",
                 style: TextStyle(
                     color: CUSTOM_BLUE,
                     fontWeight: FontWeight.w500,
                     fontSize: 18),
               ),
             ),
-            _makeStatTile("Cycle length", stats.cycleLength),
-            _makeStatTile("Period length", stats.periodLength)
+            _makeInfoTile("Had sex", info.sex.toString()),
+            _makeInfoTile("Used birth control", info.birthControl.toString()),
+            _makeInfoTile("Temperature", "${info.temperature}°C"),
+            _makeInfoTile("Notes", info.notes)
           ],
         ));
   }
@@ -194,19 +201,19 @@ class CalendarState extends State<Calendar> {
                     fontSize: 18),
               ),
             ),
-            _makeStatTile("Cycle length", stats.cycleLength),
-            _makeStatTile("Period length", stats.periodLength)
+            _makeInfoTile("Cycle length", stats.cycleLength.toString()),
+            _makeInfoTile("Period length", stats.periodLength.toString())
           ],
         ));
   }
 
-  ListTile _makeStatTile(String title, int value) {
+  ListTile _makeInfoTile(String title, String value) {
     return ListTile(
       leading: Text(
         title,
         style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
       ),
-      trailing: Text("$value"),
+      trailing: Text(value),
     );
   }
 
@@ -269,5 +276,13 @@ class CalendarState extends State<Calendar> {
       color: CUSTOM_YELLOW,
       thickness: 2,
     );
+  }
+
+  Future<void> _editDailyInfo(DateTime date) async {
+    DailyInfo dailyInfo = await Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => DailyInfoForm(date, null)));
+    setState(() {
+      widget.infoRepository.updateDailyInfo(dailyInfo);
+    });
   }
 }
