@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:strawberry/period/model/day_type.dart';
-import 'package:strawberry/period/model/period.dart';
-import 'package:strawberry/period/model/stats.dart';
+import 'package:strawberry/model/day_type.dart';
+import 'package:strawberry/model/period.dart';
+import 'package:strawberry/model/stats.dart';
 import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/date_time_utils.dart';
 

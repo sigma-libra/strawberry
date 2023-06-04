@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_color_generator/material_color_generator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:strawberry/info/repository/info_repository.dart';
 import 'package:strawberry/notification/notifications_service.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
@@ -17,14 +15,11 @@ void main() async {
   PeriodService periodService = PeriodService(settings);
   PeriodRepository periodRepository = PeriodRepository();
   await periodRepository.init();
-  InfoRepository infoRepository = InfoRepository();
-  await infoRepository.init();
   final NotificationService notificationService = NotificationService();
   await notificationService.init();
   initializeDateFormatting().then((_) => runApp(MyApp(
         periodRepository: periodRepository,
         periodService: periodService,
-        infoRepository: infoRepository,
         notificationService: notificationService,
         settings: settings,
       )));
@@ -35,14 +30,12 @@ class MyApp extends StatelessWidget {
     super.key,
     required this.periodRepository,
     required this.periodService,
-    required this.infoRepository,
     required this.notificationService,
     required this.settings,
   });
 
   final PeriodRepository periodRepository;
   final PeriodService periodService;
-  final InfoRepository infoRepository;
   final NotificationService notificationService;
   final SettingsService settings;
 
@@ -56,7 +49,6 @@ class MyApp extends StatelessWidget {
       home: StartPage(
         periodRepository: periodRepository,
         periodService: periodService,
-        infoRepository: infoRepository,
         notificationService: notificationService,
         settings: settings,
       ),

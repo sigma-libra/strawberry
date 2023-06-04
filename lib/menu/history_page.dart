@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:strawberry/period/model/period.dart';
+import 'package:strawberry/model/period.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/utils/colors.dart';

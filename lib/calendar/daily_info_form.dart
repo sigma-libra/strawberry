@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
-import 'package:strawberry/info/model/daily_info.dart';
-import 'package:strawberry/info/model/sex_type.dart';
+import 'package:strawberry/model/daily_info.dart';
+import 'package:strawberry/model/sex_type.dart';
 
 class DailyInfoForm extends StatefulWidget {
   DailyInfoForm(DateTime date, DailyInfo? dailyInfo, {Key? key})
@@ -42,6 +42,7 @@ class DailyInfoFormState extends State<DailyInfoForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _createPeriodCheck(),
               _createSexTypeField(),
               _createBirthControlCheck(),
               _createTemperatureField(),
@@ -52,6 +53,15 @@ class DailyInfoFormState extends State<DailyInfoForm> {
         ),
       ),
     );
+  }
+
+  Checkbox _createPeriodCheck() {
+    return Checkbox(
+        key: Key(_dailyInfo.hadPeriod.toString()),
+        value: _dailyInfo.hadPeriod,
+        onChanged: (checked) {
+          _dailyInfo.hadPeriod = !_dailyInfo.hadPeriod;
+        });
   }
 
   Checkbox _createBirthControlCheck() {
@@ -109,10 +119,10 @@ class DailyInfoFormState extends State<DailyInfoForm> {
   FormField _createSexTypeField() {
     return DropdownButtonFormField<SexType>(
       items: _getSexTypeAsDropDown(),
-      value: _dailyInfo.sex,
+      value: _dailyInfo.hadSex,
       onChanged: (newValue) {
         setState(() {
-          _dailyInfo.sex = newValue!;
+          _dailyInfo.hadSex = newValue!;
         });
       },
       decoration: const InputDecoration(
@@ -120,7 +130,7 @@ class DailyInfoFormState extends State<DailyInfoForm> {
           labelText: "Type of sex",
           contentPadding: EdgeInsets.all(16.0)),
       onSaved: (value) {
-        _dailyInfo.sex = value ?? SexType.NONE;
+        _dailyInfo.hadSex = value ?? SexType.NONE;
       },
     );
   }
@@ -129,7 +139,7 @@ class DailyInfoFormState extends State<DailyInfoForm> {
     return SexType.values.map((SexType sexType) {
       return DropdownMenuItem<SexType>(
         value: sexType,
-        child: Text(sexTypes[sexType]!.toString()),
+        child: Text(sexType.toString()),
       );
     }).toList();
   }
