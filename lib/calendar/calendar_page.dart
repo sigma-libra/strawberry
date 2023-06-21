@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:strawberry/calendar/daily_info_form.dart';
+import 'package:strawberry/calendar/daily_info_page.dart';
 import 'package:strawberry/model/daily_info.dart';
 import 'package:strawberry/notification/notifications_service.dart';
 import 'package:strawberry/notification/notification_id_constants.dart';
@@ -8,8 +8,8 @@ import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/colors.dart';
-import 'package:strawberry/utils/date_time_utils.dart';
 import 'package:table_calendar/table_calendar.dart';
+
 
 class Calendar extends StatefulWidget {
   const Calendar({
@@ -60,7 +60,8 @@ class CalendarState extends State<Calendar> {
               children: [
                 _makeCalendar(periodDates),
                 _divider(),
-                _makeDailyInfoPage(_displayDayInfo),
+                DailyInfoPage(widget.periodRepository,
+                    _displayDay, _displayDayInfo),
               ],
             );
           } else {
@@ -179,40 +180,6 @@ class CalendarState extends State<Calendar> {
     );
   }
 
-  Flexible _makeDailyInfoPage(DailyInfo? info) {
-    if (info == null) {
-      return const Flexible(child: Text("No day selected"));
-    }
-    return Flexible(
-        child: ListView(
-      children: [
-        ListTile(
-          title: Text(
-            "Daily Information",
-            style: TextStyle(
-                color: CUSTOM_BLUE, fontWeight: FontWeight.w500, fontSize: 18),
-          ),
-        ),
-        _makeInfoTile("Date", DateTimeUtils.formatPrettyDate(info.date)),
-        _makeInfoTile("Had sex", info.hadSex.toDisplayString()),
-        _makeInfoTile("Used birth control", info.birthControl ? "Yes" : "No"),
-        _makeInfoTile("Temperature",
-            info.temperature == 0.0 ? "" : "${info.temperature}°C"),
-        _makeInfoTile("Notes", info.notes)
-      ],
-    ));
-  }
-
-  ListTile _makeInfoTile(String title, String value) {
-    return ListTile(
-      leading: Text(
-        title,
-        style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
-      ),
-      trailing: Text(value),
-    );
-  }
-
   void _setPeriodNotifications(Map<DateTime, DateType> futurePeriods) {
     bool setAnyNotifications = widget.service.getPeriodNotifications();
     bool setCurrentPeriodNotifications =
@@ -272,13 +239,5 @@ class CalendarState extends State<Calendar> {
       color: CUSTOM_YELLOW,
       thickness: 2,
     );
-  }
-
-  Future<void> _editDailyInfo(DateTime date) async {
-    DailyInfo dailyInfo = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => DailyInfoForm(date, null)));
-    setState(() {
-      widget.periodRepository.updateInfoForDay(dailyInfo);
-    });
   }
 }
