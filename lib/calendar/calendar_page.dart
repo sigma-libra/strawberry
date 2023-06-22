@@ -112,15 +112,18 @@ class CalendarState extends State<Calendar> {
         //_editDailyInfo(selectedDay);
       },
       onDayLongPressed: (DateTime selectedDay, DateTime focusedDay) {
+        String message = "";
         setState(() {
           widget.periodRepository
               .getInfoForDate(selectedDay)
               .then((value) => _changePeriodStatus(value));
           if (periods.contains(selectedDay)) {
             widget.periodRepository.deleteInfoForDate(selectedDay);
+            message = "Removed period";
           } else {
             widget.periodRepository
                 .insertInfoForDay(DailyInfo.create(selectedDay));
+            message = "Added period";
           }
           // DateTime date = DateTime.now().add(const Duration(seconds: 20));
           // widget.notificationService.showScheduledNotification(
@@ -130,6 +133,15 @@ class CalendarState extends State<Calendar> {
           //   date: date,
           // );
         });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          shape: const RoundedRectangleBorder(),
+          duration: const Duration(milliseconds: 500),
+          content: Text(message, textAlign: TextAlign.center,),
+          backgroundColor: CUSTOM_BLUE,
+          dismissDirection: DismissDirection.none,
+
+        ));
       },
       onPageChanged: (focusedDay) {
         // No need to call `setState()` here
