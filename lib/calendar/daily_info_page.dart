@@ -8,19 +8,10 @@ import 'dart:developer' as developer;
 import 'package:strawberry/utils/date_time_utils.dart';
 
 class DailyInfoPage extends StatefulWidget {
-  DailyInfoPage(this.periodRepository, DateTime? date, DailyInfo? dailyInfo,
-      {super.key}) {
-    if (dailyInfo != null) {
-      this.dailyInfo = dailyInfo;
-    } else if (date != null) {
-      this.dailyInfo = DailyInfo.create(date);
-    } else {
-      this.dailyInfo = null;
-    }
-  }
+  const DailyInfoPage(this.periodRepository, this.dailyInfo, {super.key});
 
   final PeriodRepository periodRepository;
-  late DailyInfo? dailyInfo;
+  final DailyInfo dailyInfo;
 
   @override
   DailyInfoPageState createState() {
@@ -29,34 +20,36 @@ class DailyInfoPage extends StatefulWidget {
 }
 
 class DailyInfoPageState extends State<DailyInfoPage> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final info = widget.dailyInfo;
-    if (info == null) {
-      return const Text("No day selected");
-    } else {
-      return Flexible(
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          children: [
-            ListTile(
-              title: Text(
-                "Daily Information",
-                style: TextStyle(
-                    color: CUSTOM_BLUE,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18),
-              ),
+    return Flexible(
+      child: ListView(
+        scrollDirection: Axis.vertical,
+        children: [
+          ListTile(
+            title: Text(
+              "Daily Information",
+              style: TextStyle(
+                  color: CUSTOM_BLUE,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18),
             ),
-            _makeInfoTile("Date", DateTimeUtils.formatPrettyDate(info.date)),
-            _createSexType(info),
-            _createBirthControlCheck(info),
-            _createTemperatureCheck(info),
-            _createNotes(info)
-          ],
-        ),
-      );
-    }
+          ),
+          _makeInfoTile(
+              "Date", DateTimeUtils.formatPrettyDate(widget.dailyInfo.date)),
+          _createSexType(),
+          _createBirthControlCheck(),
+          _createTemperatureCheck(),
+          _createNotes()
+        ],
+      ),
+    );
   }
 
   ListTile _makeInfoTile(String title, String value) {
@@ -69,37 +62,22 @@ class DailyInfoPageState extends State<DailyInfoPage> {
     );
   }
 
-  ListTile _createPeriodCheck(DailyInfo info) {
-    return ListTile(
-        leading: Text(
-          "Had Period",
-          style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
-        ),
-        trailing: Checkbox(
-            key: Key(info.hadPeriod.toString()),
-            value: info.hadPeriod,
-            onChanged: (checked) {
-              info.hadPeriod = !info.hadPeriod;
-              _editDailyInfo(info);
-            }));
-  }
-
-  ListTile _createBirthControlCheck(DailyInfo info) {
+  ListTile _createBirthControlCheck() {
     return ListTile(
         leading: Text(
           "Birth Control",
           style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
         ),
         trailing: Checkbox(
-            key: Key(info.birthControl.toString()),
-            value: info.birthControl,
+            key: Key(widget.dailyInfo.birthControl.toString()),
+            value: widget.dailyInfo.birthControl,
             onChanged: (checked) {
-              info.birthControl = !info.birthControl;
-              _editDailyInfo(info);
+              widget.dailyInfo.birthControl = !widget.dailyInfo.birthControl;
+              _updateDailyInfo();
             }));
   }
 
-  Padding _createTemperatureCheck(DailyInfo info) {
+  Padding _createTemperatureCheck() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -113,24 +91,25 @@ class DailyInfoPageState extends State<DailyInfoPage> {
         Expanded(
           flex: 1,
           child: TextFormField(
-              key: Key(info.temperature.toString()),
+              key: Key(widget.dailyInfo.temperature.toString()),
               keyboardType: TextInputType.number,
+              initialValue: widget.dailyInfo.temperature.toString(),
               validator: _validateTemperature,
-              initialValue: info.temperature.toString(),
               maxLength: 4,
               textAlign: TextAlign.end,
-              onSaved: (value) {
-                info.temperature = double.tryParse(value ?? "0") ?? 0;
-                _editDailyInfo(info);
-              }),
+              onTapOutside: (event) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                _setTemperature(widget.dailyInfo.temperature.toString());
+              },
+              onFieldSubmitted: _setTemperature),
         )
       ]),
     );
   }
 
-  void setTemperature(DailyInfo info, String value) {
-    info.temperature = double.tryParse(value ?? "0") ?? 0;
-    _editDailyInfo(info);
+  void _setTemperature(String? value) {
+    widget.dailyInfo.temperature = double.tryParse(value ?? "0") ?? 0;
+    _updateDailyInfo();
   }
 
   String? _validateTemperature(value) {
@@ -147,7 +126,7 @@ class DailyInfoPageState extends State<DailyInfoPage> {
     return null;
   }
 
-  Padding _createSexType(DailyInfo info) {
+  Padding _createSexType() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -164,19 +143,20 @@ class DailyInfoPageState extends State<DailyInfoPage> {
                 flex: 5,
                 child: DropdownButtonFormField<SexType>(
                   items: _getSexTypeAsDropDown(),
-                  value: info.hadSex,
+                  value: widget.dailyInfo.hadSex,
                   decoration: const InputDecoration(
                       contentPadding: EdgeInsets.all(16.0)),
                   onChanged: (value) {
-                    info.hadSex = value ?? SexType.NONE;
-                    _editDailyInfo(info);
+                    widget.dailyInfo.hadSex = value ?? SexType.NONE;
+                    _updateDailyInfo();
                   },
                 ))
           ]),
     );
   }
 
-  Padding _createNotes(DailyInfo info) {
+  Padding _createNotes() {
+    String notes = widget.dailyInfo.notes;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(children: <Widget>[
@@ -198,15 +178,26 @@ class DailyInfoPageState extends State<DailyInfoPage> {
               Expanded(
                   flex: 5,
                   child: TextFormField(
-                      key: Key(info.notes),
-                      initialValue: info.notes.toString(),
-                      onSaved: (value) {
-                        info.notes = value ?? "";
-                        _editDailyInfo(info);
-                      }))
+                    key: Key(widget.dailyInfo.notes),
+                    initialValue: widget.dailyInfo.notes,
+                    minLines: 1,
+                    maxLines: 10,
+                    onChanged: (value) {
+                      notes = value;
+                    },
+                    onTapOutside: (event) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      _saveNotes(notes);
+                    },
+                  ))
             ])
       ]),
     );
+  }
+
+  void _saveNotes(String value) {
+    widget.dailyInfo.notes = value;
+    _updateDailyInfo();
   }
 
   List<DropdownMenuItem<SexType>> _getSexTypeAsDropDown() {
@@ -218,10 +209,13 @@ class DailyInfoPageState extends State<DailyInfoPage> {
     }).toList();
   }
 
-  Future<void> _editDailyInfo(DailyInfo info) async {
-    setState(() {
-      widget.dailyInfo = info;
-      widget.periodRepository.insertInfoForDay(info);
-    });
+  Future<void> _updateDailyInfo() async {
+    await widget.periodRepository.insertInfoForDay(widget.dailyInfo);
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

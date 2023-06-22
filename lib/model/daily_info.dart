@@ -52,7 +52,7 @@ class DailyInfo {
         hadSex: SexType.values[map[hadSexColumn]],
         birthControl: map[birthControlColumn] == 1 ? true: false,
         temperature: map[temperatureColumn],
-        notes: map[notesColumn]);
+        notes: map[notesColumn].toString());
   }
 
   // Implement toString to make it easier to see information about

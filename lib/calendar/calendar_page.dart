@@ -10,7 +10,6 @@ import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/colors.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-
 class Calendar extends StatefulWidget {
   const Calendar({
     super.key,
@@ -60,14 +59,22 @@ class CalendarState extends State<Calendar> {
               children: [
                 _makeCalendar(periodDates),
                 _divider(),
-                DailyInfoPage(widget.periodRepository,
-                    _displayDay, _displayDayInfo),
+                _makeInfoPage(),
               ],
             );
           } else {
             return const CircularProgressIndicator();
           }
         });
+  }
+
+  Widget _makeInfoPage() {
+    if (_displayDay == null) {
+      return const Text("No day selected");
+    } else {
+      _displayDayInfo ??= DailyInfo.create(_displayDay!);
+      return DailyInfoPage(widget.periodRepository, _displayDayInfo!);
+    }
   }
 
   TableCalendar _makeCalendar(List<DateTime> periods) {
