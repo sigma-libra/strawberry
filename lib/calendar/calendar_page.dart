@@ -8,6 +8,7 @@ import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/colors.dart';
+import 'package:strawberry/utils/snackbar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Calendar extends StatefulWidget {
@@ -133,15 +134,7 @@ class CalendarState extends State<Calendar> {
           //   date: date,
           // );
         });
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          behavior: SnackBarBehavior.floating,
-          shape: const RoundedRectangleBorder(),
-          duration: const Duration(milliseconds: 500),
-          content: Text(message, textAlign: TextAlign.center,),
-          backgroundColor: CUSTOM_BLUE,
-          dismissDirection: DismissDirection.none,
-
-        ));
+        showSnackBar(context, message);
       },
       onPageChanged: (focusedDay) {
         // No need to call `setState()` here

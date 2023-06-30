@@ -4,6 +4,7 @@ import 'package:strawberry/notification/notifications_service.dart';
 import 'package:strawberry/settings/settings_constants.dart';
 import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/colors.dart';
+import 'package:strawberry/utils/snackbar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage(
@@ -83,8 +84,7 @@ class SettingsPageState extends State<SettingsPage> {
                   widget.settings
                       .setCycle(int.parse(_cycleController.value.text));
                 }
-
-                Navigator.pop(context);
+                showSnackBar(context, "Saved new settings");
               },
               child: const Text('Save'),
             ),
@@ -120,7 +120,7 @@ class SettingsPageState extends State<SettingsPage> {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          const Text("All notifications"),
+          const Text("Report upcoming period"),
           Switch(
             value: _notificationsOn,
             activeColor: CUSTOM_YELLOW,
@@ -139,7 +139,7 @@ class SettingsPageState extends State<SettingsPage> {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          const Text("Current period notification"),
+          const Text("Ask about current period"),
           Switch(
             value: _notificationsOn && _currentNotificationsOn,
             activeColor: CUSTOM_YELLOW,

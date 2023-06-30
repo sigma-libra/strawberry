@@ -7,6 +7,7 @@ import 'package:strawberry/menu/stats_page.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/settings/settings_service.dart';
+import 'package:strawberry/utils/snackbar.dart';
 
 import 'notification/notifications_service.dart';
 
@@ -116,6 +117,7 @@ class StartPageState extends State<StartPage> {
                   onPressed: () {
                     // Close the dialog
                     Navigator.of(context).pop();
+                    showSnackBar(context, "Deleted all data");
                   },
                   child: const Text('No'))
             ],
