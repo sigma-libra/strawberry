@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:strawberry/model/sex_type.dart';
 import 'package:strawberry/period/repository/database_constants.dart';
+import 'package:strawberry/settings/settings_constants.dart';
 
 class DailyInfo {
   late int id;
@@ -21,12 +22,12 @@ class DailyInfo {
       required this.temperature,
       required this.notes});
 
-  DailyInfo.create(this.date) {
+  DailyInfo.create(this.date, double defaultTemperature) {
     id = Random().nextInt(10000);
     hadPeriod = false;
     hadSex = SexType.NONE;
     birthControl = false;
-    temperature = 0;
+    temperature = defaultTemperature;
     notes = "";
   }
 

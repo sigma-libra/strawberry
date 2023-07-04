@@ -20,6 +20,7 @@ class SettingsPage extends StatefulWidget {
 class SettingsPageState extends State<SettingsPage> {
   TextEditingController _cycleController = TextEditingController();
   TextEditingController _periodController = TextEditingController();
+  TextEditingController _temperatureController = TextEditingController();
 
   bool _useManualAverages = DEFAULT_MANUAL_AVERAGES;
 
@@ -37,6 +38,8 @@ class SettingsPageState extends State<SettingsPage> {
         TextEditingController(text: widget.settings.getCycle().toString());
     _periodController =
         TextEditingController(text: widget.settings.getPeriod().toString());
+    _temperatureController =
+        TextEditingController(text: widget.settings.getTemperature().toString());
     _useManualAverages = widget.settings.getManualAveragesFlag();
     _notificationsOn = widget.settings.getNotificationsFlag();
     _currentNotificationsOn = widget.settings.getCurrentNotificationsFlag();
@@ -69,8 +72,9 @@ class SettingsPageState extends State<SettingsPage> {
             _timeField(),
             _divider(),
             _manualSwitch(),
-            _numberField(_cycleController, "Cycle"),
-            _numberField(_periodController, "Period"),
+            _numberField(_cycleController, "Cycle Duration", 2),
+            _numberField(_periodController, "Period Duration", 2),
+            _numberField(_temperatureController, "Default Temperature", 5),
             ElevatedButton(
               onPressed: () {
                 widget.settings.setNotificationsFlag(_notificationsOn);
@@ -83,6 +87,8 @@ class SettingsPageState extends State<SettingsPage> {
                       .setPeriod(int.parse(_periodController.value.text));
                   widget.settings
                       .setCycle(int.parse(_cycleController.value.text));
+                  widget.settings.setTemperature(
+                      double.parse(_temperatureController.value.text));
                 }
                 showSnackBar(context, "Saved new settings");
               },
@@ -92,24 +98,24 @@ class SettingsPageState extends State<SettingsPage> {
         ));
   }
 
-  Row _numberField(TextEditingController controller, String label) {
+  Row _numberField(TextEditingController controller, String label, int maxLength) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("$label Duration"),
+        Text(label),
         SizedBox(
-            width: 40,
+            width: 50,
             child: TextField(
               enabled: _useManualAverages,
               style: TextStyle(color: _enabledTextColor()),
               cursorColor: _enabledTextColor(),
               controller: controller,
-              textDirection: TextDirection.rtl,
+              textDirection: TextDirection.ltr,
               maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              maxLength: 2,
-              keyboardType: TextInputType.number,
+              maxLength: maxLength,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
+                FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
               ],
             ))
       ],

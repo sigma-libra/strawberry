@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:strawberry/model/daily_info.dart';
 import 'package:strawberry/model/sex_type.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
+import 'package:strawberry/settings/settings_constants.dart';
 import 'package:strawberry/utils/colors.dart';
-import 'dart:developer' as developer;
 
 import 'package:strawberry/utils/date_time_utils.dart';
 
@@ -20,6 +20,7 @@ class DailyInfoPage extends StatefulWidget {
 }
 
 class DailyInfoPageState extends State<DailyInfoPage> {
+  final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -94,7 +95,6 @@ class DailyInfoPageState extends State<DailyInfoPage> {
               key: Key(widget.dailyInfo.temperature.toString()),
               keyboardType: TextInputType.number,
               initialValue: widget.dailyInfo.temperature.toString(),
-              validator: _validateTemperature,
               maxLength: 4,
               textAlign: TextAlign.end,
               onTapOutside: (event) {
@@ -108,22 +108,7 @@ class DailyInfoPageState extends State<DailyInfoPage> {
   }
 
   void _setTemperature(String? value) {
-    widget.dailyInfo.temperature = double.tryParse(value ?? "0") ?? 0;
-    _updateDailyInfo();
-  }
-
-  String? _validateTemperature(value) {
-    final temperature = double.tryParse(value);
-    if (value != null && !value.isEmpty && temperature == null) {
-      developer.log("New temperature invalid: $value");
-      return 'Please enter a number';
-    }
-    final nonNullTemperature = temperature ?? 0;
-    if (nonNullTemperature < 0) {
-      developer.log("New temperature invalid: $value");
-      return 'Please enter a positive number';
-    }
-    return null;
+    widget.dailyInfo.temperature = double.tryParse(value ?? DEFAULT_AVERAGE_TEMPERATURE.toString()) ?? DEFAULT_AVERAGE_TEMPERATURE;
   }
 
   Padding _createSexType() {
@@ -156,7 +141,6 @@ class DailyInfoPageState extends State<DailyInfoPage> {
   }
 
   Padding _createNotes() {
-    String notes = widget.dailyInfo.notes;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(children: <Widget>[
@@ -183,21 +167,18 @@ class DailyInfoPageState extends State<DailyInfoPage> {
                     minLines: 1,
                     maxLines: 10,
                     onChanged: (value) {
-                      notes = value;
+                      widget.dailyInfo.notes = value;
                     },
                     onTapOutside: (event) {
                       FocusManager.instance.primaryFocus?.unfocus();
-                      _saveNotes(notes);
+                      if(widget.dailyInfo.notes.isNotEmpty) {
+                        _updateDailyInfo();
+                      }
                     },
                   ))
             ])
       ]),
     );
-  }
-
-  void _saveNotes(String value) {
-    widget.dailyInfo.notes = value;
-    _updateDailyInfo();
   }
 
   List<DropdownMenuItem<SexType>> _getSexTypeAsDropDown() {
