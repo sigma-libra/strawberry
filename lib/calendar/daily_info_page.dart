@@ -20,7 +20,6 @@ class DailyInfoPage extends StatefulWidget {
 }
 
 class DailyInfoPageState extends State<DailyInfoPage> {
-  final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -33,7 +32,7 @@ class DailyInfoPageState extends State<DailyInfoPage> {
       child: ListView(
         scrollDirection: Axis.vertical,
         children: [
-          ListTile(
+          const ListTile(
             title: Text(
               "Daily Information",
               style: TextStyle(
@@ -57,7 +56,7 @@ class DailyInfoPageState extends State<DailyInfoPage> {
     return ListTile(
       leading: Text(
         title,
-        style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
+        style: const TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
       ),
       trailing: Text(value),
     );
@@ -65,8 +64,8 @@ class DailyInfoPageState extends State<DailyInfoPage> {
 
   ListTile _createBirthControlCheck() {
     return ListTile(
-        leading: Text(
-          "Birth Control",
+        leading: const Text(
+          "On Birth Control",
           style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
         ),
         trailing: Checkbox(
@@ -82,7 +81,7 @@ class DailyInfoPageState extends State<DailyInfoPage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Expanded(
+        const Expanded(
           flex: 5,
           child: Text(
             "Temperature",
@@ -117,7 +116,7 @@ class DailyInfoPageState extends State<DailyInfoPage> {
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Expanded(
+            const Expanded(
                 flex: 5,
                 child: Text(
                   "Had Sex",
@@ -146,7 +145,7 @@ class DailyInfoPageState extends State<DailyInfoPage> {
       child: Column(children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          children: const [
             Expanded(
                 flex: 5,
                 child: Text(

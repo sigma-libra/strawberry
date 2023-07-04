@@ -73,13 +73,14 @@ class CalendarState extends State<Calendar> {
     if (_displayDay == null) {
       return const Text("No day selected");
     } else {
-      _displayDayInfo ??= DailyInfo.create(_displayDay!, widget.settings.getTemperature());
+      _displayDayInfo ??= DailyInfo.create(_displayDay!, widget.settings.getTemperature(), widget.settings.getBirthControl());
       return DailyInfoPage(widget.periodRepository, _displayDayInfo!);
     }
   }
 
   TableCalendar _makeCalendar(List<DateTime> periods) {
     double defaultTemperature = widget.settings.getTemperature();
+    bool defaultBirthControl = widget.settings.getBirthControl();
     return TableCalendar(
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,
@@ -104,37 +105,30 @@ class CalendarState extends State<Calendar> {
 
         return isSameDay(_selectedDay, day);
       },
-      onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
-        _displayDay = selectedDay;
+      onDaySelected: (DateTime selectedDay, DateTime focusedDay) async {
+        await widget.periodRepository
+            .getInfoForDate(selectedDay, defaultTemperature, defaultBirthControl)
+            .then((value) => _displayDayInfo = value);
         setState(() {
-          widget.periodRepository
-              .getInfoForDate(selectedDay, defaultTemperature)
-              .then((value) => _displayDayInfo = value);
+          _displayDay = selectedDay;
         });
       },
-      onDayLongPressed: (DateTime selectedDay, DateTime focusedDay) {
+      onDayLongPressed: (DateTime selectedDay, DateTime focusedDay) async {
         String message = "";
+        await widget.periodRepository
+            .getInfoForDate(selectedDay, defaultTemperature, defaultBirthControl)
+            .then((value) => _changePeriodStatus(value));
+        if (periods.contains(selectedDay)) {
+          await widget.periodRepository.deleteInfoForDate(selectedDay);
+          message = "Removed period";
+        } else {
+          await widget.periodRepository
+              .insertInfoForDay(DailyInfo.create(selectedDay, defaultTemperature, defaultBirthControl));
+          message = "Added period";
+        }
         setState(() {
-          widget.periodRepository
-              .getInfoForDate(selectedDay, defaultTemperature)
-              .then((value) => _changePeriodStatus(value));
-          if (periods.contains(selectedDay)) {
-            widget.periodRepository.deleteInfoForDate(selectedDay);
-            message = "Removed period";
-          } else {
-            widget.periodRepository
-                .insertInfoForDay(DailyInfo.create(selectedDay, defaultTemperature));
-            message = "Added period";
-          }
-          // DateTime date = DateTime.now().add(const Duration(seconds: 20));
-          // widget.notificationService.showScheduledNotification(
-          //   id: testId,
-          //   title: "Test notification",
-          //   body: "Testing after 20 seconds: $date",
-          //   date: date,
-          // );
+          showSnackBar(context, message);
         });
-        showSnackBar(context, message);
       },
       onPageChanged: (focusedDay) {
         // No need to call `setState()` here
@@ -247,7 +241,7 @@ class CalendarState extends State<Calendar> {
   }
 
   Divider _divider() {
-    return Divider(
+    return const Divider(
       color: CUSTOM_YELLOW,
       thickness: 2,
     );

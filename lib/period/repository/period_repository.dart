@@ -48,7 +48,7 @@ class PeriodRepository {
     });
   }
 
-  Future<DailyInfo> getInfoForDate(DateTime date, double defaultTemperature) async {
+  Future<DailyInfo> getInfoForDate(DateTime date, double defaultTemperature, bool defaultBirthControl) async {
     final List<Map<String, dynamic>> entry = await _database.query(tableName,
         where: '$dateColumn = ?',
         whereArgs: [date.millisecondsSinceEpoch],
@@ -56,7 +56,7 @@ class PeriodRepository {
     final found = List.generate(entry.length, (index) {
       return DailyInfo.fromMap(entry[index]);
     });
-    return found.firstOrNull ?? DailyInfo.create(date, defaultTemperature);
+    return found.firstOrNull ?? DailyInfo.create(date, defaultTemperature, defaultBirthControl);
   }
 
   Future<void> updateInfoForDay(DailyInfo dailyInfo) async {
