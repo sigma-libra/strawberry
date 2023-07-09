@@ -88,8 +88,12 @@ class SettingsPageState extends State<SettingsPage> {
             _divider(),
             _numberField(
                 _temperatureController,
-                "Default Temperature",
-                "Your default average temperature. You can also set this per day in the calendar.",
+                "Base Body Temperature",
+                "Your usual body temperature. You can also set this per day in the calendar. "
+                    "Women are typically most fertile from the start of their period until 4 days after a rise in their body temperature due to ovulation. "
+                    "Temperature can therefore be used as an approximate estimate of when to have sex to induce or avoid pregnancy. "
+                    "However, note that body temperature can be influenced by other things, like sleep, travel, illness or stress. "
+                    "An estimated 1 in 4 women using temperature to prevent pregnancy become pregnant within a year. ",
                 5),
             _birthControlSwitch(),
             ElevatedButton(
@@ -127,7 +131,8 @@ class SettingsPageState extends State<SettingsPage> {
             width: 50,
             child: TextField(
               enabled: enablingFlag,
-              style: TextStyle(color: _enabledTextColor(enabledFlag: enablingFlag)),
+              style: TextStyle(
+                  color: _enabledTextColor(enabledFlag: enablingFlag)),
               cursorColor: _enabledTextColor(),
               controller: controller,
               textDirection: TextDirection.ltr,
@@ -187,7 +192,9 @@ class SettingsPageState extends State<SettingsPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           showTextWithTooltip("On birth control by default",
-              "Whether per default you have birth control on a daily basis, for example an implant or IUD."),
+              "Whether per default you have birth control on a daily basis, for example an implant or IUD. "
+              "Remember to keep track of your birth control's expiration date. "
+          ),
           Switch(
             value: _defaultOnBirthControl,
             activeColor: CUSTOM_YELLOW,
