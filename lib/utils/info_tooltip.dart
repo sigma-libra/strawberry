@@ -12,6 +12,7 @@ Tooltip showInfoToolTip(String message) {
     triggerMode: TooltipTriggerMode.tap,
     margin: const EdgeInsets.all(16),
     padding: const EdgeInsets.all(16),
+    showDuration: const Duration(seconds: 5),
     child: const Icon(
       Icons.info_outline,
       size: 16,

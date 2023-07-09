@@ -20,7 +20,6 @@ class DailyInfoPage extends StatefulWidget {
 }
 
 class DailyInfoPageState extends State<DailyInfoPage> {
-
   @override
   void initState() {
     super.initState();
@@ -28,27 +27,22 @@ class DailyInfoPageState extends State<DailyInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: ListView(
-        scrollDirection: Axis.vertical,
-        children: [
-          const ListTile(
-            title: Text(
-              "Daily Information",
-              style: TextStyle(
-                  color: CUSTOM_BLUE,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18),
-            ),
+    return Column(
+      children: [
+        const ListTile(
+          title: Text(
+            "Daily Information",
+            style: TextStyle(
+                color: CUSTOM_BLUE, fontWeight: FontWeight.w500, fontSize: 18),
           ),
-          _makeInfoTile(
-              "Date", DateTimeUtils.formatPrettyDate(widget.dailyInfo.date)),
-          _createSexType(),
-          _createBirthControlCheck(),
-          _createTemperatureCheck(),
-          _createNotes()
-        ],
-      ),
+        ),
+        _makeInfoTile(
+            "Date", DateTimeUtils.formatPrettyDate(widget.dailyInfo.date)),
+        _createSexType(),
+        _createBirthControlCheck(),
+        _createTemperatureCheck(),
+        _createNotes()
+      ],
     );
   }
 
@@ -107,7 +101,9 @@ class DailyInfoPageState extends State<DailyInfoPage> {
   }
 
   void _setTemperature(String? value) {
-    widget.dailyInfo.temperature = double.tryParse(value ?? DEFAULT_AVERAGE_TEMPERATURE.toString()) ?? DEFAULT_AVERAGE_TEMPERATURE;
+    widget.dailyInfo.temperature =
+        double.tryParse(value ?? DEFAULT_AVERAGE_TEMPERATURE.toString()) ??
+            DEFAULT_AVERAGE_TEMPERATURE;
   }
 
   Padding _createSexType() {
@@ -170,7 +166,7 @@ class DailyInfoPageState extends State<DailyInfoPage> {
                     },
                     onTapOutside: (event) {
                       FocusManager.instance.primaryFocus?.unfocus();
-                      if(widget.dailyInfo.notes.isNotEmpty) {
+                      if (widget.dailyInfo.notes.isNotEmpty) {
                         _updateDailyInfo();
                       }
                     },

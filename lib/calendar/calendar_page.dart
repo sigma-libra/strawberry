@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:strawberry/calendar/daily_info_page.dart';
 import 'package:strawberry/model/daily_info.dart';
 import 'package:strawberry/notification/notifications_service.dart';
@@ -55,14 +56,11 @@ class CalendarState extends State<Calendar> {
             List<DateTime> periodDates =
                 snapshot.requireData.toList(growable: true);
             widget.service.calculateStatsFromPeriods(periodDates);
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _makeCalendar(periodDates),
-                _divider(),
-                _makeInfoPage(),
-              ],
-            );
+            return ListView(children: [
+              _makeCalendar(periodDates),
+              _divider(),
+              _makeInfoPage(),
+            ]);
           } else {
             return const CircularProgressIndicator();
           }
@@ -73,7 +71,8 @@ class CalendarState extends State<Calendar> {
     if (_displayDay == null) {
       return const Text("No day selected");
     } else {
-      _displayDayInfo ??= DailyInfo.create(_displayDay!, widget.settings.getTemperature(), widget.settings.getBirthControl());
+      _displayDayInfo ??= DailyInfo.create(_displayDay!,
+          widget.settings.getTemperature(), widget.settings.getBirthControl());
       return DailyInfoPage(widget.periodRepository, _displayDayInfo!);
     }
   }
@@ -107,7 +106,8 @@ class CalendarState extends State<Calendar> {
       },
       onDaySelected: (DateTime selectedDay, DateTime focusedDay) async {
         await widget.periodRepository
-            .getInfoForDate(selectedDay, defaultTemperature, defaultBirthControl)
+            .getInfoForDate(
+                selectedDay, defaultTemperature, defaultBirthControl)
             .then((value) => _displayDayInfo = value);
         setState(() {
           _displayDay = selectedDay;
@@ -116,14 +116,15 @@ class CalendarState extends State<Calendar> {
       onDayLongPressed: (DateTime selectedDay, DateTime focusedDay) async {
         String message = "";
         await widget.periodRepository
-            .getInfoForDate(selectedDay, defaultTemperature, defaultBirthControl)
+            .getInfoForDate(
+                selectedDay, defaultTemperature, defaultBirthControl)
             .then((value) => _changePeriodStatus(value));
         if (periods.contains(selectedDay)) {
           await widget.periodRepository.deleteInfoForDate(selectedDay);
           message = "Removed period";
         } else {
-          await widget.periodRepository
-              .insertInfoForDay(DailyInfo.create(selectedDay, defaultTemperature, defaultBirthControl));
+          await widget.periodRepository.insertInfoForDay(DailyInfo.create(
+              selectedDay, defaultTemperature, defaultBirthControl));
           message = "Added period";
         }
         setState(() {
