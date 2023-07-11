@@ -69,7 +69,10 @@ class CalendarState extends State<Calendar> {
 
   Widget _makeInfoPage() {
     if (_displayDay == null) {
-      return const Text("No day selected");
+      return const Text(
+        "No day selected",
+        textAlign: TextAlign.center,
+      );
     } else {
       _displayDayInfo ??= DailyInfo.create(_displayDay!,
           widget.settings.getTemperature(), widget.settings.getBirthControl());

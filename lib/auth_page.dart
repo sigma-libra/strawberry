@@ -52,7 +52,6 @@ class _AuthCodePageState extends State<AuthCodePage> {
                 notificationService: widget.notificationService,
                 settings: widget.settings);
           } else {
-            print(pass.error);
             return _retryScreen();
           }
         });
