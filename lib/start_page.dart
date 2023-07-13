@@ -3,23 +3,25 @@ import 'package:strawberry/calendar/calendar_page.dart';
 import 'package:strawberry/menu/alerts_page.dart';
 import 'package:strawberry/menu/history_page.dart';
 import 'package:strawberry/menu/settings_page.dart';
+import 'package:strawberry/menu/stats_page.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/settings/settings_service.dart';
+import 'package:strawberry/utils/snackbar.dart';
 
 import 'notification/notifications_service.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({
     super.key,
-    required this.repository,
-    required this.service,
+    required this.periodRepository,
+    required this.periodService,
     required this.notificationService,
     required this.settings,
   });
 
-  final PeriodRepository repository;
-  final PeriodService service;
+  final PeriodRepository periodRepository;
+  final PeriodService periodService;
   final NotificationService notificationService;
   final SettingsService settings;
 
@@ -43,35 +45,47 @@ class StartPageState extends State<StartPage> {
                   value: 0,
                   child: Text("History"),
                 ),
-                // const PopupMenuItem<int>(
-                //   value: 1,
-                //   child: Text("Alerts"),
-                // ),
+                const PopupMenuItem<int>(
+                  value: 1,
+                  child: Text("Alerts"),
+                ),
                 const PopupMenuItem<int>(
                   value: 2,
-                  child: Text("Settings"),
+                  child: Text("Stats"),
                 ),
                 const PopupMenuItem<int>(
                   value: 3,
+                  child: Text("Settings"),
+                ),
+                const PopupMenuItem<int>(
+                  value: 4,
                   child: Text("Delete All"),
                 ),
               ];
             }, onSelected: (value) {
-              if (value == 0) {
-                _showHistory(context);
-              // } else if (value == 1) {
-              //   _showAlerts(context);
-              } else if (value == 2) {
-                _showSettings(context);
-              } else if (value == 3) {
-                _delete(context);
+              switch (value) {
+                case 0:
+                  _showHistory(context);
+                  break;
+                case 1:
+                  _showAlerts(context);
+                  break;
+                case 2:
+                  _showStats(context);
+                  break;
+                case 3:
+                  _showSettings(context);
+                  break;
+                case 4:
+                  _delete(context);
+                  break;
               }
             }),
           ],
         ),
         body: Calendar(
-          repository: widget.repository,
-          service: widget.service,
+          periodRepository: widget.periodRepository,
+          service: widget.periodService,
           notificationService: widget.notificationService,
           settings: widget.settings,
         ));
@@ -91,7 +105,7 @@ class StartPageState extends State<StartPage> {
                   onPressed: () {
                     // Remove the box
                     setState(() {
-                      widget.repository.truncate();
+                      widget.periodRepository.truncate();
                       widget.notificationService.clearAll();
                     });
 
@@ -103,6 +117,7 @@ class StartPageState extends State<StartPage> {
                   onPressed: () {
                     // Close the dialog
                     Navigator.of(context).pop();
+                    showSnackBar(context, "Deleted all data");
                   },
                   child: const Text('No'))
             ],
@@ -115,8 +130,8 @@ class StartPageState extends State<StartPage> {
       context,
       MaterialPageRoute(
           builder: (context) => HistoryPage(
-                repository: widget.repository,
-                service: widget.service,
+                repository: widget.periodRepository,
+                service: widget.periodService,
               )),
     );
   }
@@ -127,6 +142,16 @@ class StartPageState extends State<StartPage> {
       MaterialPageRoute(
           builder: (context) => AlertsPage(
                 notificationService: widget.notificationService,
+              )),
+    );
+  }
+
+  void _showStats(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => StatsPage(
+                service: widget.periodService,
               )),
     );
   }

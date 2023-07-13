@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:strawberry/period/model/day_type.dart';
-import 'package:strawberry/period/model/period.dart';
-import 'package:strawberry/period/model/stats.dart';
+import 'package:strawberry/model/day_type.dart';
+import 'package:strawberry/model/period.dart';
+import 'package:strawberry/model/stats.dart';
 import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/date_time_utils.dart';
 
@@ -48,12 +48,12 @@ class PeriodService {
     Map<DateTime, DateType> dates = {};
 
     Map<DateTime, DateType> currentPeriodDates =
-        _getCurrentPeriodDates(lastPeriod, periodDuration);
+        _getCurrentPeriodDates(lastPeriod, periodDuration, currentDay);
 
     dates.addAll(currentPeriodDates);
 
     Map<DateTime, DateType> futurePeriodDates = _getFuturePeriodDates(
-        lastPeriod, numberOfCycles, cycleDuration, periodDuration);
+        lastPeriod, numberOfCycles, cycleDuration, periodDuration, currentDay);
 
     dates.addAll(futurePeriodDates);
 
@@ -61,11 +61,14 @@ class PeriodService {
   }
 
   Map<DateTime, DateType> _getCurrentPeriodDates(
-      Period lastPeriod, Duration periodDuration) {
+      Period lastPeriod, Duration periodDuration, DateTime currentDay) {
     int lastPeriodDaysLeft = periodDuration.inDays -
         (lastPeriod.endDay.difference(lastPeriod.startDay).inDays);
 
     Map<DateTime, DateType> dates = {};
+    if (lastPeriod.endDay.isBefore(currentDay)) {
+      return dates;
+    }
     for (int left = 1; left < lastPeriodDaysLeft; left++) {
       DateTime dateInCurrentPeriod =
           lastPeriod.endDay.add(Duration(days: left));
@@ -74,14 +77,21 @@ class PeriodService {
     return dates;
   }
 
-  Map<DateTime, DateType> _getFuturePeriodDates(Period initialPeriod,
-      int numberOfCycles, Duration cycleDuration, Duration periodDuration) {
+  Map<DateTime, DateType> _getFuturePeriodDates(
+      Period initialPeriod,
+      int numberOfCycles,
+      Duration cycleDuration,
+      Duration periodDuration,
+      DateTime currentDay) {
     Map<DateTime, DateType> futurePeriodDates = {};
     Period lastPeriod = initialPeriod;
     bool markedNextStart = false;
 
     for (int cycle = 0; cycle < numberOfCycles; cycle++) {
       DateTime startOfNextPeriod = lastPeriod.startDay.add(cycleDuration);
+      if (startOfNextPeriod.isBefore(currentDay)) {
+        startOfNextPeriod = currentDay;
+      }
       DateTime endOfNextPeriod = startOfNextPeriod.add(periodDuration);
       Period nextPeriod =
           Period(startDay: startOfNextPeriod, endDay: endOfNextPeriod);

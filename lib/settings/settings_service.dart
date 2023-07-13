@@ -33,6 +33,16 @@ class SettingsService {
   int getPeriod() =>
       _preferences.getInt(AVERAGE_PERIOD_KEY) ?? DEFAULT_AVERAGE_PERIOD_LENGTH;
 
+  void setTemperature(double value) => _preferences.setDouble(AVERAGE_TEMPERATURE_KEY, value);
+
+  double getTemperature() =>
+      _preferences.getDouble(AVERAGE_TEMPERATURE_KEY) ?? DEFAULT_AVERAGE_TEMPERATURE;
+
+  void setBirthControl(bool value) => _preferences.setBool(BIRTH_CONTROL_KEY, value);
+
+  bool getBirthControl() =>
+      _preferences.getBool(BIRTH_CONTROL_KEY) ?? DEFAULT_BIRTH_CONTROL;
+
   void setCycle(int value) => _preferences.setInt(AVERAGE_CYCLE_KEY, value);
 
   int getCycle() =>
