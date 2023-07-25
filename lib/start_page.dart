@@ -105,19 +105,18 @@ class StartPageState extends State<StartPage> {
                   onPressed: () {
                     // Remove the box
                     setState(() {
-                      widget.periodRepository.truncate();
                       widget.notificationService.clearAll();
+                      widget.periodRepository.truncate();
                     });
-
                     // Close the dialog
                     Navigator.of(context).pop();
+                    showSnackBar(context, "Deleted all data");
                   },
                   child: const Text('Yes')),
               TextButton(
                   onPressed: () {
                     // Close the dialog
                     Navigator.of(context).pop();
-                    showSnackBar(context, "Deleted all data");
                   },
                   child: const Text('No'))
             ],
