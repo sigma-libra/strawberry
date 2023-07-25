@@ -24,7 +24,7 @@ class AlertsPageState extends State<AlertsPage> {
           } else if (snapshot.hasData) {
             return Scaffold(
                 appBar: AppBar(
-                  title: const Text("History"),
+                  title: const Text("Alerts"),
                 ),
                 body: _makeAlertList(snapshot.requireData.toList()));
           } else {

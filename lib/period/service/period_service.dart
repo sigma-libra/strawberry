@@ -66,7 +66,7 @@ class PeriodService {
         (lastPeriod.endDay.difference(lastPeriod.startDay).inDays);
 
     Map<DateTime, DateType> dates = {};
-    if (lastPeriod.endDay.isBefore(currentDay)) {
+    if (DateTimeUtils.isBeforeOrSameDay(lastPeriod.endDay, currentDay)) {
       return dates;
     }
     for (int left = 1; left < lastPeriodDaysLeft; left++) {

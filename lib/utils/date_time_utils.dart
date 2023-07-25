@@ -15,4 +15,10 @@ class DateTimeUtils {
       return "$number";
     }
   }
+
+  static bool isBeforeOrSameDay(DateTime firstDate, DateTime secondDate) {
+    DateTime firstNormalized = DateTime(firstDate.year, firstDate.month, firstDate.day);
+    DateTime secondNormalized = DateTime(secondDate.year, secondDate.month, secondDate.day);
+    return firstNormalized.isBefore(secondNormalized) || firstNormalized.isAtSameMomentAs(secondDate);
+  }
 }

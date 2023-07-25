@@ -193,6 +193,7 @@ class SettingsPageState extends State<SettingsPage> {
         children: <Widget>[
           showTextWithTooltip("On birth control by default",
               "Whether per default you have birth control on a daily basis, for example an implant or IUD. "
+              "This will only update unedited days. "
               "Remember to keep track of your birth control's expiration date. "
           ),
           Switch(
