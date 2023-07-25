@@ -65,13 +65,16 @@ class PeriodService {
     int lastPeriodDaysLeft = periodDuration.inDays -
         (lastPeriod.endDay.difference(lastPeriod.startDay).inDays);
 
+    int futureDaysLeftInPeriod = lastPeriodDaysLeft - currentDay.difference(lastPeriod.endDay).inDays;
+    bool daysInFutureExist = futureDaysLeftInPeriod > 0;
+
     Map<DateTime, DateType> dates = {};
-    if (DateTimeUtils.isBeforeOrSameDay(currentDay, lastPeriod.endDay)) {
+    if (!daysInFutureExist) {
       return dates;
     }
-    for (int left = 1; left < lastPeriodDaysLeft; left++) {
+    for (int left = 0; left <= futureDaysLeftInPeriod; left++) {
       DateTime dateInCurrentPeriod =
-          lastPeriod.endDay.add(Duration(days: left));
+          currentDay.add(Duration(days: left));
       dates[dateInCurrentPeriod] = DateType.IN_CURRENT_PERIOD;
     }
     return dates;
