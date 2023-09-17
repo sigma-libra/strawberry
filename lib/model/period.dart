@@ -7,8 +7,8 @@ class Period {
 
   Period({required this.startDay, required this.endDay});
 
-  bool includeInPeriod(DateTime day) {
-    if (_isInPeriod(day)) {
+  bool belongsToPeriod(DateTime day) {
+    if (_isWithinPeriod(day)) {
       return true;
     }
     if (endDay.difference(day).inDays.abs() < 3) {
@@ -20,11 +20,10 @@ class Period {
 
   List<DateTime> getDatesInPeriod() {
     List<DateTime> dates = List.empty(growable: true);
-    Duration dayConstant = const Duration(days: 1);
     DateTime date = startDay;
     while (date.isBefore(endDay)) {
       dates.add(date);
-      date = date.add(dayConstant);
+      date = date.add(const Duration(days: 1));
     }
     return dates;
   }
@@ -36,12 +35,9 @@ class Period {
     return 'Period {start date: $startDay, end date: $endDay}';
   }
 
-  bool _isInPeriod(DateTime day) {
-    return isSameDay(startDay, day) ||
-        isSameDay(endDay, day) ||
-        (startDay.isBefore(day) && endDay.isAfter(day));
+  bool _isWithinPeriod(DateTime day) {
+    return isSameDay(startDay, day) || isSameDay(endDay, day) || (startDay.isBefore(day) && endDay.isAfter(day));
   }
 
-  String prettyString() =>
-      "${DateTimeUtils.formatPrettyDate(startDay)} - ${DateTimeUtils.formatPrettyDate(endDay)}";
+  String prettyString() => "${DateTimeUtils.formatPrettyDate(startDay)} - ${DateTimeUtils.formatPrettyDate(endDay)}";
 }

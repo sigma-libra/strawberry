@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 const String AVERAGE_PERIOD_KEY = "average_period";
 const int DEFAULT_AVERAGE_PERIOD_LENGTH = 7;
 const String AVERAGE_TEMPERATURE_KEY = "average_temperature";

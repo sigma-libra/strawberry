@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:strawberry/calendar/daily_info_page.dart';
 import 'package:strawberry/model/daily_info.dart';
-import 'package:strawberry/notification/notifications_service.dart';
-import 'package:strawberry/notification/notification_id_constants.dart';
 import 'package:strawberry/model/day_type.dart';
+import 'package:strawberry/notification/notification_id_constants.dart';
+import 'package:strawberry/notification/notifications_service.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/settings/settings_service.dart';
@@ -45,16 +44,14 @@ class CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: widget.periodRepository.getPeriodDates(),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<DateTime>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<DateTime>> snapshot) {
           if (snapshot.hasError) {
             return Text(
               'There was an error :(',
               style: Theme.of(context).textTheme.displayLarge,
             );
           } else if (snapshot.hasData) {
-            List<DateTime> periodDates =
-                snapshot.requireData.toList(growable: true);
+            List<DateTime> periodDates = snapshot.requireData.toList(growable: true);
             widget.service.calculateStatsFromPeriods(periodDates);
             return ListView(children: [
               _makeCalendar(periodDates),
@@ -74,8 +71,8 @@ class CalendarState extends State<Calendar> {
         textAlign: TextAlign.center,
       );
     } else {
-      _displayDayInfo ??= DailyInfo.create(_displayDay!,
-          widget.settings.getTemperature(), widget.settings.getBirthControl());
+      _displayDayInfo ??=
+          DailyInfo.create(_displayDay!, widget.settings.getTemperature(), widget.settings.getBirthControl());
       return DailyInfoPage(widget.periodRepository, _displayDayInfo!);
     }
   }
@@ -109,8 +106,7 @@ class CalendarState extends State<Calendar> {
       },
       onDaySelected: (DateTime selectedDay, DateTime focusedDay) async {
         await widget.periodRepository
-            .getInfoForDate(
-                selectedDay, defaultTemperature, defaultBirthControl)
+            .getInfoForDate(selectedDay, defaultTemperature, defaultBirthControl)
             .then((value) => _displayDayInfo = value);
         setState(() {
           _displayDay = selectedDay;
@@ -119,15 +115,14 @@ class CalendarState extends State<Calendar> {
       onDayLongPressed: (DateTime selectedDay, DateTime focusedDay) async {
         String message = "";
         await widget.periodRepository
-            .getInfoForDate(
-                selectedDay, defaultTemperature, defaultBirthControl)
+            .getInfoForDate(selectedDay, defaultTemperature, defaultBirthControl)
             .then((value) => _changePeriodStatus(value));
         if (periods.contains(selectedDay)) {
           await widget.periodRepository.deleteInfoForDate(selectedDay);
           message = "Removed period";
         } else {
-          await widget.periodRepository.insertInfoForDay(DailyInfo.create(
-              selectedDay, defaultTemperature, defaultBirthControl));
+          await widget.periodRepository
+              .insertInfoForDay(DailyInfo.create(selectedDay, defaultTemperature, defaultBirthControl));
           message = "Added period";
         }
         setState(() {
@@ -145,8 +140,7 @@ class CalendarState extends State<Calendar> {
               return _markDay(day, CUSTOM_RED, Colors.white);
             }
           }
-          Map<DateTime, DateType> futurePeriods =
-              widget.service.getPredictedPeriods(12, periods, DateTime.now());
+          Map<DateTime, DateType> futurePeriods = widget.service.getPredictedPeriods(2, periods, DateTime.now());
 
           _setPeriodNotifications(futurePeriods);
 
@@ -179,8 +173,7 @@ class CalendarState extends State<Calendar> {
       borderColor = Colors.green;
     }
     return Container(
-      decoration: BoxDecoration(
-          color: dayColor, border: Border.all(color: borderColor, width: 5.0)),
+      decoration: BoxDecoration(color: dayColor, border: Border.all(color: borderColor, width: 5.0)),
       child: Center(
         child: Text(
           '${day.day}',
@@ -192,23 +185,17 @@ class CalendarState extends State<Calendar> {
 
   void _setPeriodNotifications(Map<DateTime, DateType> futurePeriods) {
     bool setAnyNotifications = widget.service.getPeriodNotifications();
-    bool setCurrentPeriodNotifications =
-        widget.service.setCurrentPeriodNotifications();
+    bool setCurrentPeriodNotifications = widget.service.setCurrentPeriodNotifications();
     if (futurePeriods.isNotEmpty) {
-      Map<DateTime, DateType> localDates = futurePeriods.map(
-          (key, value) => MapEntry(_parseNotificationDateTime(key), value));
-      DateTime nextPeriodStart = localDates.entries
-          .firstWhere(
-              (element) => element.value == DateType.START_OF_NEXT_PERIOD)
-          .key;
+      Map<DateTime, DateType> localDates =
+          futurePeriods.map((key, value) => MapEntry(_parseNotificationDateTime(key), value));
+      DateTime nextPeriodStart =
+          localDates.entries.firstWhere((element) => element.value == DateType.START_OF_NEXT_PERIOD).key;
       _setNewNextPeriodStartNotification(nextPeriodStart, setAnyNotifications);
 
-      List<DateTime> periodContinuations = localDates.entries
-          .where((element) => element.value == DateType.IN_CURRENT_PERIOD)
-          .map((e) => e.key)
-          .toList();
-      _setNewPeriodEndCheckNotification(periodContinuations,
-          setAnyNotifications && setCurrentPeriodNotifications);
+      List<DateTime> periodContinuations =
+          localDates.entries.where((element) => element.value == DateType.IN_CURRENT_PERIOD).map((e) => e.key).toList();
+      _setNewPeriodEndCheckNotification(periodContinuations, setAnyNotifications && setCurrentPeriodNotifications);
     }
   }
 
@@ -217,8 +204,7 @@ class CalendarState extends State<Calendar> {
     return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
-  Future<void> _setNewNextPeriodStartNotification(
-      DateTime nextPeriodStart, bool addNew) async {
+  Future<void> _setNewNextPeriodStartNotification(DateTime nextPeriodStart, bool addNew) async {
     await widget.notificationService.clearOldPeriodStartNotifications();
     if (addNew) {
       await widget.notificationService.showScheduledNotification(
@@ -229,10 +215,10 @@ class CalendarState extends State<Calendar> {
     }
   }
 
-  Future<void> _setNewPeriodEndCheckNotification(
-      List<DateTime> dates, bool addNew) async {
+  Future<void> _setNewPeriodEndCheckNotification(List<DateTime> dates, bool addNew) async {
     await widget.notificationService.clearOldPeriodEndCheckNotifications();
     if (addNew) {
+      dates.sort();
       for (int i = 0; i < dates.length; i++) {
         DateTime date = dates[i];
         await widget.notificationService.showScheduledNotification(
@@ -241,7 +227,19 @@ class CalendarState extends State<Calendar> {
             body: "Do you still have your period today?",
             date: date);
       }
+      if (dates.isNotEmpty) {
+        DateTime newCycleStart = dates.last.add(const Duration(days: 1));
+        _setPeriodNewCycleStartNotification(newCycleStart, dates.length);
+      }
     }
+  }
+
+  Future<void> _setPeriodNewCycleStartNotification(DateTime date, int offset) async {
+    await widget.notificationService.showScheduledNotification(
+        id: PERIOD_END_NOTIFICATION_ID_FLOOR + offset,
+        title: "New cycle start?",
+        body: "Is your period over yet?",
+        date: date);
   }
 
   Divider _divider() {

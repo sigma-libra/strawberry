@@ -33,8 +33,7 @@ class _AuthCodePageState extends State<AuthCodePage> {
 
   Future<bool> _getAuth() async {
     return await auth.authenticate(
-        localizedReason: 'Authenticate',
-        options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true));
+        localizedReason: 'Authenticate', options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true));
   }
 
   @override
@@ -42,11 +41,10 @@ class _AuthCodePageState extends State<AuthCodePage> {
     return FutureBuilder(
         future: _getAuth(),
         builder: (BuildContext context, AsyncSnapshot<bool> pass) {
-          if(pass.connectionState == ConnectionState.waiting) {
+          if (pass.connectionState == ConnectionState.waiting) {
             return _loadingScreen();
-          }
-          else if (pass.hasData && pass.data!) {
-             return StartPage(
+          } else if (pass.hasData && pass.data!) {
+            return StartPage(
                 periodRepository: widget.periodRepository,
                 periodService: widget.periodService,
                 notificationService: widget.notificationService,

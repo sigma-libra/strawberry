@@ -50,7 +50,7 @@ class DailyInfo {
         date: DateTime.fromMillisecondsSinceEpoch(map[dateColumn], isUtc: true),
         hadPeriod: map[hadPeriodColumn] == 1 ? true : false,
         hadSex: SexType.values[map[hadSexColumn]],
-        birthControl: map[birthControlColumn] == 1 ? true: false,
+        birthControl: map[birthControlColumn] == 1 ? true : false,
         temperature: map[temperatureColumn],
         notes: map[notesColumn].toString());
   }

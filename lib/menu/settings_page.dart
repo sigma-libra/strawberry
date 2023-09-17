@@ -8,8 +8,7 @@ import 'package:strawberry/utils/info_tooltip.dart';
 import 'package:strawberry/utils/snackbar.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage(
-      {super.key, required this.notificationService, required this.settings});
+  const SettingsPage({super.key, required this.notificationService, required this.settings});
 
   final NotificationService notificationService;
   final SettingsService settings;
@@ -31,18 +30,14 @@ class SettingsPageState extends State<SettingsPage> {
 
   bool _defaultOnBirthControl = DEFAULT_BIRTH_CONTROL;
 
-  TimeOfDay _notificationTime = const TimeOfDay(
-      hour: DEFAULT_NOTIFICATION_HOUR, minute: DEFAULT_NOTIFICATION_MINUTE);
+  TimeOfDay _notificationTime = const TimeOfDay(hour: DEFAULT_NOTIFICATION_HOUR, minute: DEFAULT_NOTIFICATION_MINUTE);
 
   @override
   void initState() {
     super.initState();
-    _cycleController =
-        TextEditingController(text: widget.settings.getCycle().toString());
-    _periodController =
-        TextEditingController(text: widget.settings.getPeriod().toString());
-    _temperatureController = TextEditingController(
-        text: widget.settings.getTemperature().toString());
+    _cycleController = TextEditingController(text: widget.settings.getCycle().toString());
+    _periodController = TextEditingController(text: widget.settings.getPeriod().toString());
+    _temperatureController = TextEditingController(text: widget.settings.getTemperature().toString());
     _useManualAverages = widget.settings.getManualAveragesFlag();
     _notificationsOn = widget.settings.getNotificationsFlag();
     _currentNotificationsOn = widget.settings.getCurrentNotificationsFlag();
@@ -76,14 +71,10 @@ class SettingsPageState extends State<SettingsPage> {
             _timeField(),
             _divider(),
             _manualSwitch(),
-            _numberField(
-                _cycleController,
-                "Cycle Duration",
-                "Number of days between the first days of two consecutive periods.",
-                2,
+            _numberField(_cycleController, "Cycle Duration",
+                "Number of days between the first days of two consecutive periods.", 2,
                 enablingFlag: _useManualAverages),
-            _numberField(_periodController, "Period Duration",
-                "Number of days from start to end of a period", 2,
+            _numberField(_periodController, "Period Duration", "Number of days from start to end of a period", 2,
                 enablingFlag: _useManualAverages),
             _divider(),
             _numberField(
@@ -99,18 +90,14 @@ class SettingsPageState extends State<SettingsPage> {
             ElevatedButton(
               onPressed: () {
                 widget.settings.setNotificationsFlag(_notificationsOn);
-                widget.settings
-                    .setCurrentNotificationsFlag(_currentNotificationsOn);
+                widget.settings.setCurrentNotificationsFlag(_currentNotificationsOn);
                 widget.settings.setNotificationTime(_notificationTime);
                 widget.settings.setManualAveragesFlag(_useManualAverages);
                 if (_useManualAverages) {
-                  widget.settings
-                      .setPeriod(int.parse(_periodController.value.text));
-                  widget.settings
-                      .setCycle(int.parse(_cycleController.value.text));
+                  widget.settings.setPeriod(int.parse(_periodController.value.text));
+                  widget.settings.setCycle(int.parse(_cycleController.value.text));
                 }
-                widget.settings.setTemperature(
-                    double.parse(_temperatureController.value.text));
+                widget.settings.setTemperature(double.parse(_temperatureController.value.text));
                 widget.settings.setBirthControl(_defaultOnBirthControl);
                 showSnackBar(context, "Saved new settings");
               },
@@ -120,8 +107,7 @@ class SettingsPageState extends State<SettingsPage> {
         ));
   }
 
-  Row _numberField(TextEditingController controller, String label,
-      String tooltip, int maxLength,
+  Row _numberField(TextEditingController controller, String label, String tooltip, int maxLength,
       {bool enablingFlag = true}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -131,15 +117,13 @@ class SettingsPageState extends State<SettingsPage> {
             width: 50,
             child: TextField(
               enabled: enablingFlag,
-              style: TextStyle(
-                  color: _enabledTextColor(enabledFlag: enablingFlag)),
+              style: TextStyle(color: _enabledTextColor(enabledFlag: enablingFlag)),
               cursorColor: _enabledTextColor(),
               controller: controller,
               textDirection: TextDirection.ltr,
               maxLengthEnforcement: MaxLengthEnforcement.enforced,
               maxLength: maxLength,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
               ],
@@ -149,64 +133,58 @@ class SettingsPageState extends State<SettingsPage> {
   }
 
   Row _notificationSwitch() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          showTextWithTooltip("Report upcoming period ",
-              "Choose whether to be notified a day before your period is predicted to start."),
-          Switch(
-            value: _notificationsOn,
-            activeColor: CUSTOM_YELLOW,
-            onChanged: (bool value) {
-              // This is called when the user toggles the switch.
-              setState(() {
-                _notificationsOn = value;
-                _currentNotificationsOn = _currentNotificationsOn && value;
-              });
-            },
-          ),
-        ]);
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+      showTextWithTooltip(
+          "Report upcoming period ", "Choose whether to be notified a day before your period is predicted to start."),
+      Switch(
+        value: _notificationsOn,
+        activeColor: CUSTOM_YELLOW,
+        onChanged: (bool value) {
+          // This is called when the user toggles the switch.
+          setState(() {
+            _notificationsOn = value;
+            _currentNotificationsOn = _currentNotificationsOn && value;
+          });
+        },
+      ),
+    ]);
   }
 
   Row _currentNotificationSwitch() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          showTextWithTooltip("Ask about current period",
-              "Choose whether to be asked whether you have your period on a day you are predicted to have your period (so you can mark it)."),
-          Switch(
-            value: _notificationsOn && _currentNotificationsOn,
-            activeColor: CUSTOM_YELLOW,
-            onChanged: (bool value) {
-              // This is called when the user toggles the switch.
-              setState(() {
-                _currentNotificationsOn = value;
-              });
-            },
-          ),
-        ]);
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+      showTextWithTooltip("Ask about current period",
+          "Choose whether to be asked whether you have your period on a day you are predicted to have your period (so you can mark it)."),
+      Switch(
+        value: _notificationsOn && _currentNotificationsOn,
+        activeColor: CUSTOM_YELLOW,
+        onChanged: (bool value) {
+          // This is called when the user toggles the switch.
+          setState(() {
+            _currentNotificationsOn = value;
+          });
+        },
+      ),
+    ]);
   }
 
   Row _birthControlSwitch() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          showTextWithTooltip("On birth control by default",
-              "Whether per default you have birth control on a daily basis, for example an implant or IUD. "
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+      showTextWithTooltip(
+          "On birth control by default",
+          "Whether per default you have birth control on a daily basis, for example an implant or IUD. "
               "This will only update unedited days. "
-              "Remember to keep track of your birth control's expiration date. "
-          ),
-          Switch(
-            value: _defaultOnBirthControl,
-            activeColor: CUSTOM_YELLOW,
-            onChanged: (bool value) {
-              // This is called when the user toggles the switch.
-              setState(() {
-                _defaultOnBirthControl = value;
-              });
-            },
-          ),
-        ]);
+              "Remember to keep track of your birth control's expiration date. "),
+      Switch(
+        value: _defaultOnBirthControl,
+        activeColor: CUSTOM_YELLOW,
+        onChanged: (bool value) {
+          // This is called when the user toggles the switch.
+          setState(() {
+            _defaultOnBirthControl = value;
+          });
+        },
+      ),
+    ]);
   }
 
   Divider _divider() {
@@ -225,37 +203,33 @@ class SettingsPageState extends State<SettingsPage> {
   }
 
   Row _manualSwitch() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          showTextWithTooltip(
-              "Use manual inputs",
-              "Choose whether to use your manual inputs, or whether to calculate your future periods based on your past periods. "
-                  "Default values will be used until at least 3 past periods exist."),
-          Switch(
-            value: _useManualAverages,
-            activeColor: CUSTOM_RED,
-            onChanged: (bool value) {
-              // This is called when the user toggles the switch.
-              setState(() {
-                _useManualAverages = value;
-                if (!_useManualAverages) {
-                  _cycleController.text = widget.settings.getCycle().toString();
-                  _periodController.text =
-                      widget.settings.getPeriod().toString();
-                }
-              });
-            },
-          ),
-        ]);
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+      showTextWithTooltip(
+          "Use manual inputs",
+          "Choose whether to use your manual inputs, or whether to calculate your future periods based on your past periods. "
+              "Default values will be used until at least 3 past periods exist."),
+      Switch(
+        value: _useManualAverages,
+        activeColor: CUSTOM_RED,
+        onChanged: (bool value) {
+          // This is called when the user toggles the switch.
+          setState(() {
+            _useManualAverages = value;
+            if (!_useManualAverages) {
+              _cycleController.text = widget.settings.getCycle().toString();
+              _periodController.text = widget.settings.getPeriod().toString();
+            }
+          });
+        },
+      ),
+    ]);
   }
 
   Row _timeField() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        showTextWithTooltip("Notification time",
-            "The time of day at which you would like to be notified."),
+        showTextWithTooltip("Notification time", "The time of day at which you would like to be notified."),
         SizedBox(
             width: 80,
             child: ElevatedButton(

@@ -4,7 +4,6 @@ import 'package:strawberry/model/sex_type.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/settings/settings_constants.dart';
 import 'package:strawberry/utils/colors.dart';
-
 import 'package:strawberry/utils/date_time_utils.dart';
 
 class DailyInfoPage extends StatefulWidget {
@@ -32,12 +31,10 @@ class DailyInfoPageState extends State<DailyInfoPage> {
         const ListTile(
           title: Text(
             "Daily Information",
-            style: TextStyle(
-                color: CUSTOM_BLUE, fontWeight: FontWeight.w500, fontSize: 18),
+            style: TextStyle(color: CUSTOM_BLUE, fontWeight: FontWeight.w500, fontSize: 18),
           ),
         ),
-        _makeInfoTile(
-            "Date", DateTimeUtils.formatPrettyDate(widget.dailyInfo.date)),
+        _makeInfoTile("Date", DateTimeUtils.formatPrettyDate(widget.dailyInfo.date)),
         _createSexType(),
         _createBirthControlCheck(),
         _createTemperatureCheck(),
@@ -102,36 +99,31 @@ class DailyInfoPageState extends State<DailyInfoPage> {
 
   void _setTemperature(String? value) {
     widget.dailyInfo.temperature =
-        double.tryParse(value ?? DEFAULT_AVERAGE_TEMPERATURE.toString()) ??
-            DEFAULT_AVERAGE_TEMPERATURE;
+        double.tryParse(value ?? DEFAULT_AVERAGE_TEMPERATURE.toString()) ?? DEFAULT_AVERAGE_TEMPERATURE;
   }
 
   Padding _createSexType() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            const Expanded(
-                flex: 5,
-                child: Text(
-                  "Had Sex",
-                  style:
-                      TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
-                )),
-            Expanded(
-                flex: 5,
-                child: DropdownButtonFormField<SexType>(
-                  items: _getSexTypeAsDropDown(),
-                  value: widget.dailyInfo.hadSex,
-                  decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.all(16.0)),
-                  onChanged: (value) {
-                    widget.dailyInfo.hadSex = value ?? SexType.NONE;
-                    _updateDailyInfo();
-                  },
-                ))
-          ]),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+        const Expanded(
+            flex: 5,
+            child: Text(
+              "Had Sex",
+              style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
+            )),
+        Expanded(
+            flex: 5,
+            child: DropdownButtonFormField<SexType>(
+              items: _getSexTypeAsDropDown(),
+              value: widget.dailyInfo.hadSex,
+              decoration: const InputDecoration(contentPadding: EdgeInsets.all(16.0)),
+              onChanged: (value) {
+                widget.dailyInfo.hadSex = value ?? SexType.NONE;
+                _updateDailyInfo();
+              },
+            ))
+      ]),
     );
   }
 
@@ -139,39 +131,36 @@ class DailyInfoPageState extends State<DailyInfoPage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(children: <Widget>[
-        Row(
+        const Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: const [
+          children: [
             Expanded(
                 flex: 5,
                 child: Text(
                   "Notes",
-                  style:
-                      TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
+                  style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
                 ))
           ],
         ),
-        Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                  flex: 5,
-                  child: TextFormField(
-                    key: Key(widget.dailyInfo.notes),
-                    initialValue: widget.dailyInfo.notes,
-                    minLines: 1,
-                    maxLines: 10,
-                    onChanged: (value) {
-                      widget.dailyInfo.notes = value;
-                    },
-                    onTapOutside: (event) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      if (widget.dailyInfo.notes.isNotEmpty) {
-                        _updateDailyInfo();
-                      }
-                    },
-                  ))
-            ])
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+          Expanded(
+              flex: 5,
+              child: TextFormField(
+                key: Key(widget.dailyInfo.notes),
+                initialValue: widget.dailyInfo.notes,
+                minLines: 1,
+                maxLines: 10,
+                onChanged: (value) {
+                  widget.dailyInfo.notes = value;
+                },
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  if (widget.dailyInfo.notes.isNotEmpty) {
+                    _updateDailyInfo();
+                  }
+                },
+              ))
+        ])
       ]),
     );
   }

@@ -97,8 +97,7 @@ class StartPageState extends State<StartPage> {
         builder: (BuildContext ctx) {
           return AlertDialog(
             title: const Text('Please Confirm'),
-            content: const Text(
-                'Are you sure to delete all data? This action cannot be reversed.'),
+            content: const Text('Are you sure to delete all data? This action cannot be reversed.'),
             actions: [
               // The "Yes" button
               TextButton(

@@ -1,5 +1,4 @@
 class DateTimeUtils {
-
   static int getNumberOfDatesBetween(DateTime startDay, DateTime endDay) {
     return endDay.difference(startDay).inDays.abs() + 1;
   }

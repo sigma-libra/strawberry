@@ -5,8 +5,7 @@ import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/utils/colors.dart';
 
 class HistoryPage extends StatefulWidget {
-  const HistoryPage(
-      {super.key, required this.repository, required this.service});
+  const HistoryPage({super.key, required this.repository, required this.service});
 
   final PeriodRepository repository;
   final PeriodService service;
@@ -20,15 +19,11 @@ class HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: widget.repository.getPeriodDates(),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<DateTime>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<DateTime>> snapshot) {
           if (snapshot.hasError) {
             return Text(
               'There was an error :(',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .displayLarge,
+              style: Theme.of(context).textTheme.displayLarge,
             );
           } else if (snapshot.hasData) {
             return Scaffold(
@@ -43,11 +38,7 @@ class HistoryPageState extends State<HistoryPage> {
   }
 
   ListView _makeHistoryList(List<DateTime> periodDays) {
-    List<Period> periods =
-    widget.service
-        .getSortedPeriods(periodDays)
-        .reversed
-        .toList();
+    List<Period> periods = widget.service.splitDaysIntoPeriods(periodDays).reversed.toList();
     return ListView.builder(
       itemCount: periods.length,
       itemBuilder: (context, index) {
