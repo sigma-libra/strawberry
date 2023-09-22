@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_color_generator/material_color_generator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:strawberry/auth_page.dart';
 import 'package:strawberry/notification/notifications_service.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
@@ -17,6 +18,15 @@ void main() async {
   await periodRepository.init();
   final NotificationService notificationService = NotificationService();
   await notificationService.init();
+
+  if (!(await Permission.notification.status.isGranted)) {
+    PermissionStatus status = await Permission.notification.request();
+    settings.setNotificationsAllowed(status.isGranted);
+    settings.setCurrentNotificationsFlag(true);
+  } else {
+    settings.setNotificationsAllowed(true);
+  }
+
   initializeDateFormatting().then((_) => runApp(MyApp(
         periodRepository: periodRepository,
         periodService: periodService,

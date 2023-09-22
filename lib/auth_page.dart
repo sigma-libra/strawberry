@@ -73,7 +73,7 @@ class _AuthCodePageState extends State<AuthCodePage> {
               onPressed: () {
                 setState(() {}); // Retry by triggering a rebuild
               },
-              child: const Text('Log back in'),
+              child: const Text('Log in'),
             )
           ],
         ),

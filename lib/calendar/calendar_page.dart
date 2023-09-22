@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:strawberry/calendar/daily_info_page.dart';
 import 'package:strawberry/model/daily_info.dart';
 import 'package:strawberry/model/day_type.dart';
@@ -35,9 +36,22 @@ class CalendarState extends State<Calendar> {
   DateTime? _displayDay;
   DailyInfo? _displayDayInfo;
 
+  Future<void> _checkNotificationPermissions() async {
+    final status = await Permission.notification.status;
+    setState(() {
+      if (status.isGranted) {
+        widget.settings.setNotificationsAllowed(true);
+      } else {
+        widget.notificationService.clearAll();
+        widget.settings.setNotificationsAllowed(false);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    _checkNotificationPermissions();
   }
 
   @override
@@ -184,7 +198,8 @@ class CalendarState extends State<Calendar> {
   }
 
   void _setPeriodNotifications(Map<DateTime, DateType> futurePeriods) {
-    bool setAnyNotifications = widget.service.getPeriodNotifications();
+    bool setAnyNotifications =
+        widget.service.getPeriodNotifications() && widget.settings.getNotificationsPermittedFlag();
     bool setCurrentPeriodNotifications = widget.service.setCurrentPeriodNotifications();
     if (futurePeriods.isNotEmpty) {
       Map<DateTime, DateType> localDates =

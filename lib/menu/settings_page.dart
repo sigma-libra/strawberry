@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:strawberry/notification/notifications_service.dart';
 import 'package:strawberry/settings/settings_constants.dart';
 import 'package:strawberry/settings/settings_service.dart';
@@ -39,7 +40,7 @@ class SettingsPageState extends State<SettingsPage> {
     _periodController = TextEditingController(text: widget.settings.getPeriod().toString());
     _temperatureController = TextEditingController(text: widget.settings.getTemperature().toString());
     _useManualAverages = widget.settings.getManualAveragesFlag();
-    _notificationsOn = widget.settings.getNotificationsFlag();
+    _notificationsOn = widget.settings.getNotificationsFlag() && widget.settings.getNotificationsPermittedFlag();
     _currentNotificationsOn = widget.settings.getCurrentNotificationsFlag();
     _notificationTime = widget.settings.getNotificationTime();
     _defaultOnBirthControl = widget.settings.getBirthControl();
@@ -137,16 +138,18 @@ class SettingsPageState extends State<SettingsPage> {
       showTextWithTooltip(
           "Report upcoming period ", "Choose whether to be notified a day before your period is predicted to start."),
       Switch(
-        value: _notificationsOn,
-        activeColor: CUSTOM_YELLOW,
-        onChanged: (bool value) {
-          // This is called when the user toggles the switch.
-          setState(() {
-            _notificationsOn = value;
-            _currentNotificationsOn = _currentNotificationsOn && value;
-          });
-        },
-      ),
+          value: _notificationsOn,
+          activeColor: CUSTOM_YELLOW,
+          onChanged: (bool value) {
+            if (widget.settings.getNotificationsPermittedFlag()) {
+              setState(() {
+                _notificationsOn = value;
+                _currentNotificationsOn = _currentNotificationsOn && value;
+              });
+            } else {
+              showSnackBar(context, "Allow notification permissions for app in settings to enable");
+            }
+          }),
     ]);
   }
 

@@ -9,6 +9,11 @@ class SettingsService {
     _preferences = await SharedPreferences.getInstance();
   }
 
+  void setNotificationsAllowed(bool value) => _preferences.setBool(NOTIFICATIONS_PERMITTED_KEY, value);
+
+  bool getNotificationsPermittedFlag() =>
+      _preferences.getBool(NOTIFICATIONS_PERMITTED_KEY) ?? DEFAULT_NOTIFICATIONS_PERMITTED;
+
   void setNotificationsFlag(bool value) => _preferences.setBool(NOTIFICATIONS_ON_KEY, value);
 
   bool getNotificationsFlag() => _preferences.getBool(NOTIFICATIONS_ON_KEY) ?? DEFAULT_NOTIFICATIONS_ON;
