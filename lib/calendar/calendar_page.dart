@@ -60,9 +60,11 @@ class CalendarState extends State<Calendar> {
         future: widget.periodRepository.getPeriodDates(),
         builder: (BuildContext context, AsyncSnapshot<List<DateTime>> snapshot) {
           if (snapshot.hasError) {
-            return Text(
-              'There was an error :(',
-              style: Theme.of(context).textTheme.displayLarge,
+            return Center(
+              child: Text(
+                'There was an error :(',
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
             );
           } else if (snapshot.hasData) {
             List<DateTime> periodDates = snapshot.requireData.toList(growable: true);
@@ -73,7 +75,9 @@ class CalendarState extends State<Calendar> {
               _makeInfoPage(),
             ]);
           } else {
-            return const CircularProgressIndicator();
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
         });
   }

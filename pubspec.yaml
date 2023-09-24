@@ -41,7 +41,7 @@ dependencies:
   uuid: ^3.0.7
   collection: ^1.16.0
   timezone: ^0.9.1
-  flutter_local_notifications: ^13.0.0
+  flutter_local_notifications: ^15.1.1
   rxdart: ^0.27.7
   flutter_launcher_icons: ^0.12.0
   material_color_generator: ^1.1.0

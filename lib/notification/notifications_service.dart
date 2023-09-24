@@ -2,8 +2,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:strawberry/notification/notification_id_constants.dart';
 import 'package:strawberry/utils/date_time_utils.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart';
+import 'package:timezone/timezone.dart';
 import 'package:timezone/timezone.dart';
 
 class NotificationService {
@@ -12,7 +12,7 @@ class NotificationService {
   final _localNotificationService = FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
-    tz.initializeTimeZones();
+    initializeTimeZones();
     const AndroidInitializationSettings androidInitializationSettings =
         AndroidInitializationSettings('@drawable/moon_icon');
 
@@ -58,8 +58,8 @@ class NotificationService {
     if (date.isAfter(DateTime.now().toUtc())) {
       final details = await _notificationDetails();
       final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
-      Location location = tz.getLocation(currentTimeZone);
-      final tz.TZDateTime dateTime = tz.TZDateTime.from(date, location);
+      Location location = getLocation(currentTimeZone);
+      final TZDateTime dateTime = TZDateTime.from(date, location);
       await _localNotificationService.zonedSchedule(id, title, body, dateTime, details,
           payload: DateTimeUtils.formatPrettyDate(date),
           uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
