@@ -32,6 +32,10 @@ class _AuthCodePageState extends State<AuthCodePage> {
   final LocalAuthentication auth = LocalAuthentication();
 
   Future<bool> _getAuth() async {
+    List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
+    if (availableBiometrics.isEmpty) {
+      return true;
+    }
     return await auth.authenticate(
         localizedReason: 'Authenticate', options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true));
   }
