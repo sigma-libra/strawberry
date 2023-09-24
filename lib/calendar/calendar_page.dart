@@ -102,6 +102,7 @@ class CalendarState extends State<Calendar> {
       availableCalendarFormats: const {
         CalendarFormat.month: 'Month',
       },
+      availableGestures: AvailableGestures.horizontalSwipe,
       firstDay: DateTime.utc(2000),
       lastDay: DateTime.utc(2100),
       focusedDay: _focusedDay,
