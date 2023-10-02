@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strawberry/model/daily_info.dart';
 import 'package:strawberry/model/sex_type.dart';
+import 'package:strawberry/moon/moon_phase.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/settings/settings_constants.dart';
 import 'package:strawberry/utils/colors.dart';
@@ -35,6 +36,7 @@ class DailyInfoPageState extends State<DailyInfoPage> {
           ),
         ),
         _makeInfoTile("Date", DateTimeUtils.formatPrettyDate(widget.dailyInfo.date)),
+        _makeMoonTile(widget.dailyInfo.date),
         _createSexType(),
         _createBirthControlCheck(),
         _createTemperatureCheck(),
@@ -50,6 +52,18 @@ class DailyInfoPageState extends State<DailyInfoPage> {
         style: const TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
       ),
       trailing: Text(value),
+    );
+  }
+
+  ListTile _makeMoonTile(DateTime date) {
+    return ListTile(
+      leading: const Text(
+        "Moon Phase",
+        style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
+      ),
+      trailing: MoonWidget(
+        date: date,
+      ),
     );
   }
 
