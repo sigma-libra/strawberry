@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:strawberry/notification/notification_id_constants.dart';
@@ -63,13 +64,17 @@ class NotificationService {
       await _localNotificationService.zonedSchedule(id, title, body, dateTime, details,
           payload: DateTimeUtils.formatPrettyDate(date),
           uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-          androidAllowWhileIdle: true);
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
     }
   }
 
-  Future<List<String>> getNotificationsList() async {
+  Future<List<PendingNotificationRequest>> getNotificationsList() async {
     List<PendingNotificationRequest> requests = await _localNotificationService.pendingNotificationRequests();
-    return requests.map((e) => "${e.payload}: ${e.body!}").toList();
+    return requests.sortedBy((element) => element.payload!).toList();
+  }
+
+  String toNotificationString(PendingNotificationRequest notification) {
+    return "${notification.payload}: ${notification.body!}";
   }
 
   Future<void> clearOldPeriodStartNotifications() async {
@@ -88,5 +93,9 @@ class NotificationService {
 
   Future<void> clearAll() async {
     await _localNotificationService.cancelAll();
+  }
+
+  Future<void> deleteNotification(PendingNotificationRequest notificationRequest) async {
+    await _localNotificationService.cancel(notificationRequest.id);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:strawberry/notification/notifications_service.dart';
 
 class AlertsPage extends StatefulWidget {
@@ -15,7 +16,7 @@ class AlertsPageState extends State<AlertsPage> {
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: widget.notificationService.getNotificationsList(),
-        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<PendingNotificationRequest>> snapshot) {
           if (snapshot.hasError) {
             return Text(
               'There was an error :(',
@@ -33,17 +34,28 @@ class AlertsPageState extends State<AlertsPage> {
         });
   }
 
-  ListView _makeAlertList(List<String> notifications) {
+  ListView _makeAlertList(List<PendingNotificationRequest> notifications) {
     return ListView.builder(
       itemCount: notifications.length,
       itemBuilder: (context, index) {
+        PendingNotificationRequest notification = notifications[index];
         return ListTile(
           title: Card(
               child: ListTile(
-            title: Text(notifications[index]),
+            title: Text(widget.notificationService.toNotificationString(notification)),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => deleteNotification(notification),
+            ),
           )),
         );
       },
     );
+  }
+
+  void deleteNotification(PendingNotificationRequest notification) {
+    setState(() {
+      widget.notificationService.deleteNotification(notification);
+    });
   }
 }

@@ -45,10 +45,10 @@ class StartPageState extends State<StartPage> {
                   value: 0,
                   child: Text("History"),
                 ),
-                //const PopupMenuItem<int>(
-                //  value: 1,
-                //  child: Text("Alerts"),
-                //),
+                const PopupMenuItem<int>(
+                  value: 1,
+                  child: Text("Alerts"),
+                ),
                 //const PopupMenuItem<int>(
                 //  value: 2,
                 //  child: Text("Stats"),
