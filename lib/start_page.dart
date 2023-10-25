@@ -62,7 +62,7 @@ class StartPageState extends State<StartPage> {
                   child: Text("Delete All"),
                 ),
               ];
-            }, onSelected: (value) {
+            }, onSelected: (value) async {
               switch (value) {
                 case 0:
                   _showHistory(context);
@@ -99,22 +99,19 @@ class StartPageState extends State<StartPage> {
             title: const Text('Please Confirm'),
             content: const Text('Are you sure to delete all data? This action cannot be reversed.'),
             actions: [
-              // The "Yes" button
               TextButton(
                   onPressed: () {
-                    // Remove the box
                     setState(() {
                       widget.notificationService.clearAll();
                       widget.periodRepository.truncate();
+                      widget.settings.resetDefaults();
                     });
-                    // Close the dialog
                     Navigator.of(context).pop();
                     showSnackBar(context, "Deleted all data");
                   },
                   child: const Text('Yes')),
               TextButton(
                   onPressed: () {
-                    // Close the dialog
                     Navigator.of(context).pop();
                   },
                   child: const Text('No'))

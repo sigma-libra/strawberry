@@ -5,7 +5,6 @@ import 'package:strawberry/notification/notification_id_constants.dart';
 import 'package:strawberry/utils/date_time_utils.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart';
-import 'package:timezone/timezone.dart';
 
 class NotificationService {
   NotificationService();

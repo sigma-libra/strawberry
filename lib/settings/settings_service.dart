@@ -53,4 +53,17 @@ class SettingsService {
     int minute = _preferences.getInt(NOTIFICATION_MINUTE_KEY) ?? DEFAULT_NOTIFICATION_MINUTE;
     return TimeOfDay(hour: hour, minute: minute);
   }
+
+  void resetDefaults() {
+    _preferences.setInt(AVERAGE_PERIOD_KEY, DEFAULT_AVERAGE_PERIOD_LENGTH);
+    _preferences.setDouble(AVERAGE_TEMPERATURE_KEY, DEFAULT_AVERAGE_TEMPERATURE);
+    _preferences.setBool(BIRTH_CONTROL_KEY, DEFAULT_BIRTH_CONTROL);
+    _preferences.setInt(AVERAGE_CYCLE_KEY, DEFAULT_AVERAGE_CYCLE_LENGTH);
+    _preferences.setBool(USE_MANUAL_AVERAGES_KEY, DEFAULT_MANUAL_AVERAGES);
+    _preferences.setBool(NOTIFICATIONS_ON_KEY, DEFAULT_NOTIFICATIONS_ON);
+    _preferences.setBool(NOTIFICATIONS_PERMITTED_KEY, DEFAULT_NOTIFICATIONS_PERMITTED);
+    _preferences.setBool(CURRENT_NOTIFICATIONS_ON_KEY, DEFAULT_CURRENT_NOTIFICATIONS_ON);
+    _preferences.setInt(NOTIFICATION_HOUR_KEY, DEFAULT_NOTIFICATION_HOUR);
+    _preferences.setInt(NOTIFICATION_MINUTE_KEY, DEFAULT_NOTIFICATION_MINUTE);
+  }
 }
