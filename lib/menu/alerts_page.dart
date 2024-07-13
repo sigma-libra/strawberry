@@ -19,7 +19,7 @@ class AlertsPageState extends State<AlertsPage> {
         builder: (BuildContext context, AsyncSnapshot<List<PendingNotificationRequest>> snapshot) {
           if (snapshot.hasError) {
             return Text(
-              'There was an error : ${snapshot.error}',
+              'There was an error. Please contact support.',
               style: Theme.of(context).textTheme.displayLarge,
             );
           } else if (snapshot.hasData) {

@@ -234,14 +234,13 @@ class SettingsPageState extends State<SettingsPage> {
       children: [
         showTextWithTooltip("Notification time", "The time of day at which you would like to be notified."),
         SizedBox(
-            width: 80,
             child: ElevatedButton(
-              onPressed: () {
-                return _selectTime(context);
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: CUSTOM_YELLOW),
-              child: Text(_notificationTime.format(context)),
-            ))
+          onPressed: () {
+            return _selectTime(context);
+          },
+          style: ElevatedButton.styleFrom(backgroundColor: CUSTOM_YELLOW),
+          child: Text(_notificationTime.format(context)),
+        ))
       ],
     );
   }
