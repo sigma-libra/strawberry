@@ -8,6 +8,7 @@ import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/colors.dart';
+import 'package:strawberry/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +53,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Strawberry',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         primarySwatch: generateMaterialColor(color: CUSTOM_BLUE),
       ),

@@ -3,6 +3,7 @@ import 'package:strawberry/model/period.dart';
 import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/utils/colors.dart';
+import 'package:strawberry/l10n/app_localizations.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key, required this.repository, required this.service});
@@ -22,13 +23,13 @@ class HistoryPageState extends State<HistoryPage> {
         builder: (BuildContext context, AsyncSnapshot<List<DateTime>> snapshot) {
           if (snapshot.hasError) {
             return Text(
-              'There was an error :(',
+              AppLocalizations.of(context)!.thereWasAnError,
               style: Theme.of(context).textTheme.displayLarge,
             );
           } else if (snapshot.hasData) {
             return Scaffold(
                 appBar: AppBar(
-                  title: const Text("History"),
+                  title: Text(AppLocalizations.of(context)!.history),
                 ),
                 body: _makeHistoryList(snapshot.requireData.toList()));
           } else {

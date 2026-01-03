@@ -7,6 +7,7 @@ import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/colors.dart';
 import 'package:strawberry/utils/info_tooltip.dart';
 import 'package:strawberry/utils/snackbar.dart';
+import 'package:strawberry/l10n/app_localizations.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key, required this.notificationService, required this.settings});
@@ -57,7 +58,7 @@ class SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Settings"),
+          title: Text(AppLocalizations.of(context)!.settings),
         ),
         body: _makeSettings());
   }
@@ -72,20 +73,16 @@ class SettingsPageState extends State<SettingsPage> {
             _timeField(),
             _divider(),
             _manualSwitch(),
-            _numberField(_cycleController, "Cycle Duration",
-                "Number of days between the first days of two consecutive periods.", 2,
+            _numberField(_cycleController, AppLocalizations.of(context)!.cycleDuration,
+                AppLocalizations.of(context)!.cycleDurationHint, 2,
                 enablingFlag: _useManualAverages),
-            _numberField(_periodController, "Period Duration", "Number of days from start to end of a period", 2,
+            _numberField(_periodController, AppLocalizations.of(context)!.periodDuration, AppLocalizations.of(context)!.periodDurationHint, 2,
                 enablingFlag: _useManualAverages),
             _divider(),
             _numberField(
                 _temperatureController,
-                "Base Body Temperature",
-                "Your usual body temperature. You can also set this per day in the calendar. "
-                    "Women are typically most fertile from the start of their period until 4 days after a rise in their body temperature due to ovulation. "
-                    "Temperature can therefore be used as an approximate estimate of when to have sex to induce or avoid pregnancy. "
-                    "However, note that body temperature can be influenced by other things, like sleep, travel, illness or stress. "
-                    "An estimated 1 in 4 women using temperature to prevent pregnancy become pregnant within a year. ",
+                AppLocalizations.of(context)!.baseBodyTemperature,
+                AppLocalizations.of(context)!.baseBodyTemperatureHint,
                 5),
             _birthControlSwitch(),
             ElevatedButton(
@@ -100,9 +97,9 @@ class SettingsPageState extends State<SettingsPage> {
                 }
                 widget.settings.setTemperature(double.parse(_temperatureController.value.text));
                 widget.settings.setBirthControl(_defaultOnBirthControl);
-                showSnackBar(context, "Saved new settings");
+                showSnackBar(context, AppLocalizations.of(context)!.savedNewSettings);
               },
-              child: const Text('Save'),
+              child: Text(AppLocalizations.of(context)!.save),
             ),
           ],
         ));
@@ -136,7 +133,7 @@ class SettingsPageState extends State<SettingsPage> {
   Row _notificationSwitch() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
       showTextWithTooltip(
-          "Report upcoming period ", "Choose whether to be notified a day before your period is predicted to start."),
+          AppLocalizations.of(context)!.reportUpcomingPeriod, AppLocalizations.of(context)!.reportUpcomingPeriodHint),
       Switch(
           value: _notificationsOn,
           activeColor: CUSTOM_YELLOW,
@@ -147,7 +144,7 @@ class SettingsPageState extends State<SettingsPage> {
                 _currentNotificationsOn = _currentNotificationsOn && value;
               });
             } else {
-              showSnackBar(context, "Allow notification permissions for app in settings to enable");
+              showSnackBar(context, AppLocalizations.of(context)!.allowNotificationPermissions);
             }
           }),
     ]);
@@ -155,8 +152,8 @@ class SettingsPageState extends State<SettingsPage> {
 
   Row _currentNotificationSwitch() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-      showTextWithTooltip("Ask about current period",
-          "Choose whether to be asked whether you have your period on a day you are predicted to have your period (so you can mark it)."),
+      showTextWithTooltip(AppLocalizations.of(context)!.askAboutCurrentPeriod,
+          AppLocalizations.of(context)!.askAboutCurrentPeriodHint),
       Switch(
         value: _notificationsOn && _currentNotificationsOn,
         activeColor: CUSTOM_YELLOW,
@@ -173,10 +170,8 @@ class SettingsPageState extends State<SettingsPage> {
   Row _birthControlSwitch() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
       showTextWithTooltip(
-          "On birth control by default",
-          "Whether per default you have birth control on a daily basis, for example an implant or IUD. "
-              "This will only update unedited days. "
-              "Remember to keep track of your birth control's expiration date. "),
+          AppLocalizations.of(context)!.onBirthControlByDefault,
+          AppLocalizations.of(context)!.onBirthControlByDefaultHint),
       Switch(
         value: _defaultOnBirthControl,
         activeColor: CUSTOM_YELLOW,
@@ -208,9 +203,8 @@ class SettingsPageState extends State<SettingsPage> {
   Row _manualSwitch() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
       showTextWithTooltip(
-          "Use manual inputs",
-          "Choose whether to use your manual inputs, or whether to calculate your future periods based on your past periods. "
-              "Default values will be used until at least 3 past periods exist."),
+          AppLocalizations.of(context)!.useManualInputs,
+          AppLocalizations.of(context)!.useManualInputsHint),
       Switch(
         value: _useManualAverages,
         activeColor: CUSTOM_RED,
@@ -232,7 +226,7 @@ class SettingsPageState extends State<SettingsPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        showTextWithTooltip("Notification time", "The time of day at which you would like to be notified."),
+        showTextWithTooltip(AppLocalizations.of(context)!.notificationTime, AppLocalizations.of(context)!.notificationTimeHint),
         SizedBox(
             child: ElevatedButton(
           onPressed: () {

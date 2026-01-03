@@ -11,6 +11,7 @@ import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/colors.dart';
 import 'package:strawberry/utils/snackbar.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:strawberry/l10n/app_localizations.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({
@@ -62,7 +63,7 @@ class CalendarState extends State<Calendar> {
           if (snapshot.hasError) {
             return Center(
               child: Text(
-                'There was an error :(',
+                AppLocalizations.of(context)!.thereWasAnError,
                 style: Theme.of(context).textTheme.displayLarge,
               ),
             );
@@ -84,8 +85,8 @@ class CalendarState extends State<Calendar> {
 
   Widget _makeInfoPage() {
     if (_displayDay == null) {
-      return const Text(
-        "No day selected",
+      return Text(
+        AppLocalizations.of(context)!.noDaySelected,
         textAlign: TextAlign.center,
       );
     } else {
@@ -138,11 +139,11 @@ class CalendarState extends State<Calendar> {
             .then((value) => _changePeriodStatus(value));
         if (periods.contains(selectedDay)) {
           await widget.periodRepository.deleteInfoForDate(selectedDay);
-          message = "Removed period";
+          message = AppLocalizations.of(context)!.removedPeriod;
         } else {
           await widget.periodRepository
               .insertInfoForDay(DailyInfo.create(selectedDay, defaultTemperature, defaultBirthControl));
-          message = "Added period";
+          message = AppLocalizations.of(context)!.addedPeriod;
         }
         setState(() {
           showSnackBar(context, message);
@@ -229,8 +230,8 @@ class CalendarState extends State<Calendar> {
     if (addNew) {
       await widget.notificationService.showScheduledNotification(
           id: PERIOD_START_NOTIFICATION_ID,
-          title: "Period start",
-          body: "Your period is scheduled to start today",
+          title: AppLocalizations.of(context)!.periodStart,
+          body: AppLocalizations.of(context)!.periodStartBody,
           date: nextPeriodStart);
     }
   }
@@ -243,8 +244,8 @@ class CalendarState extends State<Calendar> {
         DateTime date = dates[i];
         await widget.notificationService.showScheduledNotification(
             id: PERIOD_END_NOTIFICATION_ID_FLOOR + i,
-            title: "Mark your period",
-            body: "Do you still have your period today?",
+            title: AppLocalizations.of(context)!.markYourPeriod,
+            body: AppLocalizations.of(context)!.markYourPeriodBody,
             date: date);
       }
       if (dates.isNotEmpty) {
@@ -257,8 +258,8 @@ class CalendarState extends State<Calendar> {
   Future<void> _setPeriodNewCycleStartNotification(DateTime date, int offset) async {
     await widget.notificationService.showScheduledNotification(
         id: PERIOD_END_NOTIFICATION_ID_FLOOR + offset,
-        title: "New cycle start?",
-        body: "Is your period over yet?",
+        title: AppLocalizations.of(context)!.newCycleStart,
+        body: AppLocalizations.of(context)!.newCycleStartBody,
         date: date);
   }
 
