@@ -6,6 +6,7 @@ import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/start_page.dart';
 import 'package:strawberry/utils/colors.dart';
+import 'package:strawberry/l10n/app_localizations.dart';
 
 class AuthCodePage extends StatefulWidget {
   final PeriodRepository periodRepository;
@@ -37,7 +38,8 @@ class _AuthCodePageState extends State<AuthCodePage> {
       return true;
     }
     return await auth.authenticate(
-        localizedReason: 'Authenticate', options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true));
+        localizedReason: 'Authenticate', // This is shown by the OS, not translated by app
+        options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true));
   }
 
   @override
@@ -73,11 +75,13 @@ class _AuthCodePageState extends State<AuthCodePage> {
               height: 150, // Adjust the height as needed
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {}); // Retry by triggering a rebuild
-              },
-              child: const Text('Log in'),
+            Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () {
+                  setState(() {}); // Retry by triggering a rebuild
+                },
+                child: Text(AppLocalizations.of(context)!.logIn),
+              ),
             )
           ],
         ),

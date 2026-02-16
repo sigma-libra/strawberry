@@ -8,6 +8,7 @@ import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/period/service/period_service.dart';
 import 'package:strawberry/settings/settings_service.dart';
 import 'package:strawberry/utils/snackbar.dart';
+import 'package:strawberry/l10n/app_localizations.dart';
 
 import 'notification/notifications_service.dart';
 
@@ -34,32 +35,32 @@ class StartPageState extends State<StartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Strawberry'),
+          title: Text(AppLocalizations.of(context)!.appTitle),
           actions: [
             PopupMenuButton(
                 // add icon, by default "3 dot" icon
                 // icon: Icon(Icons.book)
                 itemBuilder: (context) {
               return [
-                const PopupMenuItem<int>(
+                PopupMenuItem<int>(
                   value: 0,
-                  child: Text("History"),
+                  child: Text(AppLocalizations.of(context)!.history),
                 ),
-                const PopupMenuItem<int>(
+                PopupMenuItem<int>(
                   value: 1,
-                  child: Text("Alerts"),
+                  child: Text(AppLocalizations.of(context)!.alerts),
                 ),
-                //const PopupMenuItem<int>(
+                //PopupMenuItem<int>(
                 //  value: 2,
-                //  child: Text("Stats"),
+                //  child: Text(AppLocalizations.of(context)!.stats),
                 //),
-                const PopupMenuItem<int>(
+                PopupMenuItem<int>(
                   value: 3,
-                  child: Text("Settings"),
+                  child: Text(AppLocalizations.of(context)!.settings),
                 ),
-                const PopupMenuItem<int>(
+                PopupMenuItem<int>(
                   value: 4,
-                  child: Text("Delete All"),
+                  child: Text(AppLocalizations.of(context)!.deleteAll),
                 ),
               ];
             }, onSelected: (value) async {
@@ -96,8 +97,8 @@ class StartPageState extends State<StartPage> {
         context: context,
         builder: (BuildContext ctx) {
           return AlertDialog(
-            title: const Text('Please Confirm'),
-            content: const Text('Are you sure to delete all data? This action cannot be reversed.'),
+            title: Text(AppLocalizations.of(context)!.pleaseConfirm),
+            content: Text(AppLocalizations.of(context)!.deleteAllDataConfirmation),
             actions: [
               TextButton(
                   onPressed: () {
@@ -107,14 +108,14 @@ class StartPageState extends State<StartPage> {
                       widget.settings.resetDefaults();
                     });
                     Navigator.of(context).pop();
-                    showSnackBar(context, "Deleted all data");
+                    showSnackBar(context, AppLocalizations.of(context)!.deletedAllData);
                   },
-                  child: const Text('Yes')),
+                  child: Text(AppLocalizations.of(context)!.yes)),
               TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('No'))
+                  child: Text(AppLocalizations.of(context)!.no))
             ],
           );
         });

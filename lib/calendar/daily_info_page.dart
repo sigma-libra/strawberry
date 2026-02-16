@@ -6,6 +6,7 @@ import 'package:strawberry/period/repository/period_repository.dart';
 import 'package:strawberry/settings/settings_constants.dart';
 import 'package:strawberry/utils/colors.dart';
 import 'package:strawberry/utils/date_time_utils.dart';
+import 'package:strawberry/l10n/app_localizations.dart';
 
 class DailyInfoPage extends StatefulWidget {
   const DailyInfoPage(this.periodRepository, this.dailyInfo, {super.key});
@@ -29,13 +30,13 @@ class DailyInfoPageState extends State<DailyInfoPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const ListTile(
+        ListTile(
           title: Text(
-            "Daily Information",
-            style: TextStyle(color: CUSTOM_BLUE, fontWeight: FontWeight.w500, fontSize: 18),
+            AppLocalizations.of(context)!.dailyInformation,
+            style: const TextStyle(color: CUSTOM_BLUE, fontWeight: FontWeight.w500, fontSize: 18),
           ),
         ),
-        _makeInfoTile("Date", DateTimeUtils.formatPrettyDate(widget.dailyInfo.date)),
+        _makeInfoTile(AppLocalizations.of(context)!.date, DateTimeUtils.formatPrettyDate(widget.dailyInfo.date)),
         _makeMoonTile(widget.dailyInfo.date),
         _createSexType(),
         _createBirthControlCheck(),
@@ -57,9 +58,9 @@ class DailyInfoPageState extends State<DailyInfoPage> {
 
   ListTile _makeMoonTile(DateTime date) {
     return ListTile(
-      leading: const Text(
-        "Moon Phase",
-        style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
+      leading: Text(
+        AppLocalizations.of(context)!.moonPhase,
+        style: const TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
       ),
       trailing: MoonWidget(
         date: date,
@@ -69,9 +70,9 @@ class DailyInfoPageState extends State<DailyInfoPage> {
 
   ListTile _createBirthControlCheck() {
     return ListTile(
-        leading: const Text(
-          "On Birth Control",
-          style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
+        leading: Text(
+          AppLocalizations.of(context)!.onBirthControl,
+          style: const TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
         ),
         trailing: Checkbox(
             key: Key(widget.dailyInfo.birthControl.toString()),
@@ -86,11 +87,11 @@ class DailyInfoPageState extends State<DailyInfoPage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        const Expanded(
+        Expanded(
           flex: 5,
           child: Text(
-            "Temperature",
-            style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
+            AppLocalizations.of(context)!.temperature,
+            style: const TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
           ),
         ),
         Expanded(
@@ -120,11 +121,11 @@ class DailyInfoPageState extends State<DailyInfoPage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-        const Expanded(
+        Expanded(
             flex: 5,
             child: Text(
-              "Had Sex",
-              style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
+              AppLocalizations.of(context)!.hadSex,
+              style: const TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
             )),
         Expanded(
             flex: 5,
@@ -145,14 +146,14 @@ class DailyInfoPageState extends State<DailyInfoPage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(children: <Widget>[
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
                 flex: 5,
                 child: Text(
-                  "Notes",
-                  style: TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
+                  AppLocalizations.of(context)!.notes,
+                  style: const TextStyle(color: CUSTOM_RED, fontWeight: FontWeight.w400),
                 ))
           ],
         ),
@@ -181,9 +182,21 @@ class DailyInfoPageState extends State<DailyInfoPage> {
 
   List<DropdownMenuItem<SexType>> _getSexTypeAsDropDown() {
     return SexType.values.map((SexType sexType) {
+      String displayString;
+      switch (sexType) {
+        case SexType.NONE:
+          displayString = AppLocalizations.of(context)!.sexTypeNo;
+          break;
+        case SexType.PROTECTED:
+          displayString = AppLocalizations.of(context)!.sexTypeProtected;
+          break;
+        case SexType.UNPROTECTED:
+          displayString = AppLocalizations.of(context)!.sexTypeUnprotected;
+          break;
+      }
       return DropdownMenuItem<SexType>(
         value: sexType,
-        child: Text(sexType.toDisplayString()),
+        child: Text(displayString),
       );
     }).toList();
   }

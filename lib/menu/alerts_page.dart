@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:strawberry/notification/notifications_service.dart';
+import 'package:strawberry/l10n/app_localizations.dart';
 
 class AlertsPage extends StatefulWidget {
   const AlertsPage({super.key, required this.notificationService});
@@ -19,13 +20,13 @@ class AlertsPageState extends State<AlertsPage> {
         builder: (BuildContext context, AsyncSnapshot<List<PendingNotificationRequest>> snapshot) {
           if (snapshot.hasError) {
             return Text(
-              'There was an error. Please contact support.',
+              AppLocalizations.of(context)!.thereWasAnError,
               style: Theme.of(context).textTheme.displayLarge,
             );
           } else if (snapshot.hasData) {
             return Scaffold(
                 appBar: AppBar(
-                  title: const Text("Alerts"),
+                  title: Text(AppLocalizations.of(context)!.alerts),
                 ),
                 body: _makeAlertList(snapshot.requireData.toList()));
           } else {
