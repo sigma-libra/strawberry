@@ -193,13 +193,13 @@ abstract class AppLocalizations {
   /// No description provided for @removedPeriod.
   ///
   /// In en, this message translates to:
-  /// **'Removed period'**
+  /// **'Period removed'**
   String get removedPeriod;
 
   /// No description provided for @addedPeriod.
   ///
   /// In en, this message translates to:
-  /// **'Added period'**
+  /// **'Period logged'**
   String get addedPeriod;
 
   /// No description provided for @periodStart.
@@ -211,31 +211,31 @@ abstract class AppLocalizations {
   /// No description provided for @periodStartBody.
   ///
   /// In en, this message translates to:
-  /// **'Your period is scheduled to start today'**
+  /// **'Your period should start today'**
   String get periodStartBody;
 
   /// No description provided for @markYourPeriod.
   ///
   /// In en, this message translates to:
-  /// **'Mark your period'**
+  /// **'Log your period'**
   String get markYourPeriod;
 
   /// No description provided for @markYourPeriodBody.
   ///
   /// In en, this message translates to:
-  /// **'Do you still have your period today?'**
+  /// **'Still have your period?'**
   String get markYourPeriodBody;
 
   /// No description provided for @newCycleStart.
   ///
   /// In en, this message translates to:
-  /// **'New cycle start?'**
+  /// **'New cycle?'**
   String get newCycleStart;
 
   /// No description provided for @newCycleStartBody.
   ///
   /// In en, this message translates to:
-  /// **'Is your period over yet?'**
+  /// **'Is your period over?'**
   String get newCycleStartBody;
 
   /// No description provided for @cycleDuration.
@@ -247,7 +247,7 @@ abstract class AppLocalizations {
   /// No description provided for @cycleDurationHint.
   ///
   /// In en, this message translates to:
-  /// **'Number of days between the first days of two consecutive periods.'**
+  /// **'Days between the start of each period.'**
   String get cycleDurationHint;
 
   /// No description provided for @periodDuration.
@@ -259,7 +259,7 @@ abstract class AppLocalizations {
   /// No description provided for @periodDurationHint.
   ///
   /// In en, this message translates to:
-  /// **'Number of days from start to end of a period'**
+  /// **'How many days your period lasts'**
   String get periodDurationHint;
 
   /// No description provided for @baseBodyTemperature.
@@ -271,67 +271,67 @@ abstract class AppLocalizations {
   /// No description provided for @baseBodyTemperatureHint.
   ///
   /// In en, this message translates to:
-  /// **'Your usual body temperature. You can also set this per day in the calendar. Women are typically most fertile from the start of their period until 4 days after a rise in their body temperature due to ovulation. Temperature can therefore be used as an approximate estimate of when to have sex to induce or avoid pregnancy. However, note that body temperature can be influenced by other things, like sleep, travel, illness or stress. An estimated 1 in 4 women using temperature to prevent pregnancy become pregnant within a year.'**
+  /// **'Your usual body temperature. You can also track it daily in the calendar. You\'re typically most fertile from the start of your period until 4 days after your temperature rises due to ovulation. Temperature can help estimate when to have sex to get pregnant or avoid pregnancy. Keep in mind that sleep, travel, illness, or stress can affect your temperature. About 1 in 4 women using this method to prevent pregnancy get pregnant within a year.'**
   String get baseBodyTemperatureHint;
 
   /// No description provided for @savedNewSettings.
   ///
   /// In en, this message translates to:
-  /// **'Saved new settings'**
+  /// **'Settings saved'**
   String get savedNewSettings;
 
   /// No description provided for @reportUpcomingPeriod.
   ///
   /// In en, this message translates to:
-  /// **'Report upcoming period'**
+  /// **'Upcoming period alert'**
   String get reportUpcomingPeriod;
 
   /// No description provided for @reportUpcomingPeriodHint.
   ///
   /// In en, this message translates to:
-  /// **'Choose whether to be notified a day before your period is predicted to start.'**
+  /// **'Get notified a day before your period is expected to start.'**
   String get reportUpcomingPeriodHint;
 
   /// No description provided for @allowNotificationPermissions.
   ///
   /// In en, this message translates to:
-  /// **'Allow notification permissions for app in settings to enable'**
+  /// **'Enable notification permissions in app settings'**
   String get allowNotificationPermissions;
 
   /// No description provided for @askAboutCurrentPeriod.
   ///
   /// In en, this message translates to:
-  /// **'Ask about current period'**
+  /// **'Current period reminder'**
   String get askAboutCurrentPeriod;
 
   /// No description provided for @askAboutCurrentPeriodHint.
   ///
   /// In en, this message translates to:
-  /// **'Choose whether to be asked whether you have your period on a day you are predicted to have your period (so you can mark it).'**
+  /// **'Get a reminder to log your period on predicted days.'**
   String get askAboutCurrentPeriodHint;
 
   /// No description provided for @onBirthControlByDefault.
   ///
   /// In en, this message translates to:
-  /// **'On birth control by default'**
+  /// **'Using birth control regularly'**
   String get onBirthControlByDefault;
 
   /// No description provided for @onBirthControlByDefaultHint.
   ///
   /// In en, this message translates to:
-  /// **'Whether per default you have birth control on a daily basis, for example an implant or IUD. This will only update unedited days. Remember to keep track of your birth control\'s expiration date.'**
+  /// **'If you use continuous birth control like an implant or IUD (intrauterine device). This will only affect days you haven\'t edited. Remember to track your birth control\'s expiration date.'**
   String get onBirthControlByDefaultHint;
 
   /// No description provided for @useManualInputs.
   ///
   /// In en, this message translates to:
-  /// **'Use manual inputs'**
+  /// **'Enter data manually'**
   String get useManualInputs;
 
   /// No description provided for @useManualInputsHint.
   ///
   /// In en, this message translates to:
-  /// **'Choose whether to use your manual inputs, or whether to calculate your future periods based on your past periods. Default values will be used until at least 3 past periods exist.'**
+  /// **'Choose whether to enter your data manually or predict future periods based on your history. Default values will be used until you have at least 3 logged periods.'**
   String get useManualInputsHint;
 
   /// No description provided for @notificationTime.
@@ -343,7 +343,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationTimeHint.
   ///
   /// In en, this message translates to:
-  /// **'The time of day at which you would like to be notified.'**
+  /// **'What time you want to receive notifications.'**
   String get notificationTimeHint;
 
   /// No description provided for @sexTypeNo.
@@ -367,7 +367,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationChannelDescription.
   ///
   /// In en, this message translates to:
-  /// **'Channel for notification of period days'**
+  /// **'Period notifications'**
   String get notificationChannelDescription;
 
   /// No description provided for @thereWasAnError.
@@ -397,7 +397,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteAllDataConfirmation.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure to delete all data? This action cannot be reversed.'**
+  /// **'Are you sure you want to delete all data? This can\'t be undone.'**
   String get deleteAllDataConfirmation;
 
   /// No description provided for @yes.

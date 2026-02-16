@@ -100,6 +100,7 @@ class CalendarState extends State<Calendar> {
     double defaultTemperature = widget.settings.getTemperature();
     bool defaultBirthControl = widget.settings.getBirthControl();
     return TableCalendar(
+      locale: Localizations.localeOf(context).toString(),
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,
         titleCentered: true,

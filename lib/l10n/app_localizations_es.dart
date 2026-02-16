@@ -9,7 +9,7 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'Strawberry';
+  String get appTitle => 'Fresa';
 
   @override
   String get history => 'Historial';
@@ -54,104 +54,101 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noDaySelected => 'Ningún día seleccionado';
 
   @override
-  String get removedPeriod => 'Período eliminado';
+  String get removedPeriod => 'Regla eliminada';
 
   @override
-  String get addedPeriod => 'Período agregado';
+  String get addedPeriod => 'Regla registrada';
 
   @override
-  String get periodStart => 'Inicio del período';
+  String get periodStart => 'Inicio de la regla';
 
   @override
-  String get periodStartBody => 'Tu período está programado para comenzar hoy';
+  String get periodStartBody => 'Tu regla debería comenzar hoy';
 
   @override
-  String get markYourPeriod => 'Marcar tu período';
+  String get markYourPeriod => 'Registrar tu regla';
 
   @override
-  String get markYourPeriodBody => '¿Todavía tienes tu período hoy?';
+  String get markYourPeriodBody => '¿Aún tienes la regla?';
 
   @override
   String get newCycleStart => '¿Nuevo ciclo?';
 
   @override
-  String get newCycleStartBody => '¿Ya terminó tu período?';
+  String get newCycleStartBody => '¿Ya terminó tu regla?';
 
   @override
   String get cycleDuration => 'Duración del ciclo';
 
   @override
-  String get cycleDurationHint =>
-      'Número de días entre los primeros días de dos períodos consecutivos.';
+  String get cycleDurationHint => 'Días entre el inicio de cada regla.';
 
   @override
-  String get periodDuration => 'Duración del período';
+  String get periodDuration => 'Duración de la regla';
 
   @override
-  String get periodDurationHint =>
-      'Número de días desde el inicio hasta el final de un período';
+  String get periodDurationHint => 'Cuántos días dura tu regla';
 
   @override
   String get baseBodyTemperature => 'Temperatura corporal basal';
 
   @override
   String get baseBodyTemperatureHint =>
-      'Tu temperatura corporal habitual. También puedes establecerla por día en el calendario. Las mujeres suelen ser más fértiles desde el inicio de su período hasta 4 días después de un aumento en su temperatura corporal debido a la ovulación. Por lo tanto, la temperatura puede usarse como una estimación aproximada de cuándo tener relaciones sexuales para inducir o evitar el embarazo. Sin embargo, ten en cuenta que la temperatura corporal puede verse afectada por otros factores, como el sueño, los viajes, las enfermedades o el estrés. Se estima que 1 de cada 4 mujeres que usan la temperatura para prevenir el embarazo quedan embarazadas en un año.';
+      'Tu temperatura corporal habitual. También puedes registrarla día a día en el calendario. Sueles ser más fértil desde el inicio de tu regla hasta 4 días después de que tu temperatura sube por la ovulación. La temperatura puede ayudarte a estimar cuándo tener relaciones para buscar o evitar un embarazo. Ten en cuenta que el sueño, los viajes, las enfermedades o el estrés pueden afectar tu temperatura. Aproximadamente 1 de cada 4 mujeres que usa este método para evitar el embarazo queda embarazada en un año.';
 
   @override
-  String get savedNewSettings => 'Nueva configuración guardada';
+  String get savedNewSettings => 'Configuración guardada';
 
   @override
-  String get reportUpcomingPeriod => 'Reportar período próximo';
+  String get reportUpcomingPeriod => 'Aviso de próxima regla';
 
   @override
   String get reportUpcomingPeriodHint =>
-      'Elige si deseas recibir una notificación un día antes de que se prediga que comience tu período.';
+      'Recibe un aviso un día antes de que empiece tu regla.';
 
   @override
   String get allowNotificationPermissions =>
-      'Permite permisos de notificación para la aplicación en la configuración para habilitar';
+      'Activa los permisos de notificación en los ajustes de la app';
 
   @override
-  String get askAboutCurrentPeriod => 'Preguntar sobre el período actual';
+  String get askAboutCurrentPeriod => 'Recordatorio de regla actual';
 
   @override
   String get askAboutCurrentPeriodHint =>
-      'Elige si deseas que se te pregunte si tienes tu período en un día en el que se predice que lo tendrás (para que puedas marcarlo).';
+      'Recibe un recordatorio para registrar tu regla en los días previstos.';
 
   @override
-  String get onBirthControlByDefault => 'Con anticonceptivos por defecto';
+  String get onBirthControlByDefault => 'Usar anticonceptivos continuos';
 
   @override
   String get onBirthControlByDefaultHint =>
-      'Si por defecto usas anticonceptivos a diario, por ejemplo, un implante o DIU. Esto solo actualizará los días no editados. Recuerda llevar un registro de la fecha de vencimiento de tus anticonceptivos.';
+      'Si usas anticonceptivos continuos como un implante o DIU (dispositivo intrauterino). Esto solo afectará los días que no hayas editado. Recuerda anotar la fecha de vencimiento de tu método anticonceptivo.';
 
   @override
-  String get useManualInputs => 'Usar entradas manuales';
+  String get useManualInputs => 'Ingresar datos manualmente';
 
   @override
   String get useManualInputsHint =>
-      'Elige si deseas usar tus entradas manuales o si deseas calcular tus períodos futuros basándose en tus períodos pasados. Se usarán valores predeterminados hasta que existan al menos 3 períodos pasados.';
+      'Elige si prefieres ingresar tus datos manualmente o calcular tus reglas futuras según tu historial. Se usarán valores por defecto hasta que tengas al menos 3 reglas registradas.';
 
   @override
   String get notificationTime => 'Hora de notificación';
 
   @override
   String get notificationTimeHint =>
-      'La hora del día en la que te gustaría recibir notificaciones.';
+      'A qué hora quieres recibir las notificaciones.';
 
   @override
   String get sexTypeNo => 'No';
 
   @override
-  String get sexTypeProtected => 'Sí (protegido)';
+  String get sexTypeProtected => 'Sí (con protección)';
 
   @override
   String get sexTypeUnprotected => 'Sí (sin protección)';
 
   @override
-  String get notificationChannelDescription =>
-      'Canal para notificaciones de días de período';
+  String get notificationChannelDescription => 'Notificaciones de la regla';
 
   @override
   String get thereWasAnError => 'Hubo un error :(';
@@ -163,11 +160,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authenticate => 'Autenticar';
 
   @override
-  String get pleaseConfirm => 'Por favor confirme';
+  String get pleaseConfirm => 'Por favor confirma';
 
   @override
   String get deleteAllDataConfirmation =>
-      '¿Está seguro de que desea eliminar todos los datos? Esta acción no se puede revertir.';
+      '¿Estás segura de que quieres eliminar todos los datos? Esta acción no se puede revertir.';
 
   @override
   String get yes => 'Sí';

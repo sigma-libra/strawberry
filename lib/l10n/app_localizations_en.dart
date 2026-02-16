@@ -54,91 +54,89 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noDaySelected => 'No day selected';
 
   @override
-  String get removedPeriod => 'Removed period';
+  String get removedPeriod => 'Period removed';
 
   @override
-  String get addedPeriod => 'Added period';
+  String get addedPeriod => 'Period logged';
 
   @override
   String get periodStart => 'Period start';
 
   @override
-  String get periodStartBody => 'Your period is scheduled to start today';
+  String get periodStartBody => 'Your period should start today';
 
   @override
-  String get markYourPeriod => 'Mark your period';
+  String get markYourPeriod => 'Log your period';
 
   @override
-  String get markYourPeriodBody => 'Do you still have your period today?';
+  String get markYourPeriodBody => 'Still have your period?';
 
   @override
-  String get newCycleStart => 'New cycle start?';
+  String get newCycleStart => 'New cycle?';
 
   @override
-  String get newCycleStartBody => 'Is your period over yet?';
+  String get newCycleStartBody => 'Is your period over?';
 
   @override
   String get cycleDuration => 'Cycle Duration';
 
   @override
-  String get cycleDurationHint =>
-      'Number of days between the first days of two consecutive periods.';
+  String get cycleDurationHint => 'Days between the start of each period.';
 
   @override
   String get periodDuration => 'Period Duration';
 
   @override
-  String get periodDurationHint =>
-      'Number of days from start to end of a period';
+  String get periodDurationHint => 'How many days your period lasts';
 
   @override
   String get baseBodyTemperature => 'Base Body Temperature';
 
   @override
   String get baseBodyTemperatureHint =>
-      'Your usual body temperature. You can also set this per day in the calendar. Women are typically most fertile from the start of their period until 4 days after a rise in their body temperature due to ovulation. Temperature can therefore be used as an approximate estimate of when to have sex to induce or avoid pregnancy. However, note that body temperature can be influenced by other things, like sleep, travel, illness or stress. An estimated 1 in 4 women using temperature to prevent pregnancy become pregnant within a year.';
+      'Your usual body temperature. You can also track it daily in the calendar. You\'re typically most fertile from the start of your period until 4 days after your temperature rises due to ovulation. Temperature can help estimate when to have sex to get pregnant or avoid pregnancy. Keep in mind that sleep, travel, illness, or stress can affect your temperature. About 1 in 4 women using this method to prevent pregnancy get pregnant within a year.';
 
   @override
-  String get savedNewSettings => 'Saved new settings';
+  String get savedNewSettings => 'Settings saved';
 
   @override
-  String get reportUpcomingPeriod => 'Report upcoming period';
+  String get reportUpcomingPeriod => 'Upcoming period alert';
 
   @override
   String get reportUpcomingPeriodHint =>
-      'Choose whether to be notified a day before your period is predicted to start.';
+      'Get notified a day before your period is expected to start.';
 
   @override
   String get allowNotificationPermissions =>
-      'Allow notification permissions for app in settings to enable';
+      'Enable notification permissions in app settings';
 
   @override
-  String get askAboutCurrentPeriod => 'Ask about current period';
+  String get askAboutCurrentPeriod => 'Current period reminder';
 
   @override
   String get askAboutCurrentPeriodHint =>
-      'Choose whether to be asked whether you have your period on a day you are predicted to have your period (so you can mark it).';
+      'Get a reminder to log your period on predicted days.';
 
   @override
-  String get onBirthControlByDefault => 'On birth control by default';
+  String get onBirthControlByDefault => 'Using birth control regularly';
 
   @override
   String get onBirthControlByDefaultHint =>
-      'Whether per default you have birth control on a daily basis, for example an implant or IUD. This will only update unedited days. Remember to keep track of your birth control\'s expiration date.';
+      'If you use continuous birth control like an implant or IUD (intrauterine device). This will only affect days you haven\'t edited. Remember to track your birth control\'s expiration date.';
 
   @override
-  String get useManualInputs => 'Use manual inputs';
+  String get useManualInputs => 'Enter data manually';
 
   @override
   String get useManualInputsHint =>
-      'Choose whether to use your manual inputs, or whether to calculate your future periods based on your past periods. Default values will be used until at least 3 past periods exist.';
+      'Choose whether to enter your data manually or predict future periods based on your history. Default values will be used until you have at least 3 logged periods.';
 
   @override
   String get notificationTime => 'Notification time';
 
   @override
   String get notificationTimeHint =>
-      'The time of day at which you would like to be notified.';
+      'What time you want to receive notifications.';
 
   @override
   String get sexTypeNo => 'No';
@@ -150,8 +148,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sexTypeUnprotected => 'Yes (unprotected)';
 
   @override
-  String get notificationChannelDescription =>
-      'Channel for notification of period days';
+  String get notificationChannelDescription => 'Period notifications';
 
   @override
   String get thereWasAnError => 'There was an error :(';
@@ -167,7 +164,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteAllDataConfirmation =>
-      'Are you sure to delete all data? This action cannot be reversed.';
+      'Are you sure you want to delete all data? This can\'t be undone.';
 
   @override
   String get yes => 'Yes';
